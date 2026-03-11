@@ -1,1126 +1,1284 @@
-<!doctype html>
-<html lang="fil" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Digitalization and Psychological Well-Being Course</title>
-  
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/index.min.js"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
-  <style>
-    :root {
-      --primary: #003d82; /* DOTr Blue */
-      --secondary: #d32f2f; /* Accent Red */
-      --accent: #d4af37; /* Gold */
-      --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    }
-
-    body { font-family: 'Poppins', sans-serif; background: var(--bg-gradient); min-height: 100%; margin: 0; }
-
-    /* Layout */
-    .app-container { width: 100%; min-height: 100%; padding: 1rem; }
-    .course-wrapper { max-width: 1200px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1); overflow: hidden; display: flex; flex-direction: column; min-height: 90vh; }
-
-    /* Header */
-    .header { background: linear-gradient(to right, #003d82, #0056b3); color: white; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
-    .logo { width: 70px; height: 70px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
-
-    /* Tabs */
-    .nav-tabs { background: #fff; border-bottom: 1px solid #e5e7eb; display: flex; overflow-x: auto; padding: 0 1rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
-    .nav-tab { padding: 1rem 1.5rem; color: #6b7280; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s; white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; }
-    .nav-tab:hover { color: var(--primary); background-color: #f9fafb; }
-    .nav-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
-    .nav-tab.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; filter: grayscale(1); }
-    .status-badge { font-size: 0.7rem; background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 10px; margin-left: 5px; }
-
-    /* Content */
-    .main-content { flex: 1; padding: 2rem; overflow-y: auto; background: #f8fafc; }
-    .section { display: none; animation: fadeIn 0.4s ease-out; }
-    .section.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* Components */
-    .btn { background: linear-gradient(135deg, #003d82 0%, #0056b3 100%); color: white; padding: 0.75rem 1.5rem; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; background: #9ca3af; }
-    .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 61, 130, 0.4); }
-    .form-label { display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.25rem; }
-    .form-input { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; outline: none; transition: border 0.2s; }
-    .form-input:focus { border-color: var(--primary); ring: 2px solid var(--primary); }
-
-    /* Video Embed */
-    .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; background: #000; border-radius: 15px; overflow: hidden; margin-bottom: 1rem; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-    .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-    .timer-bar { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin-bottom: 1rem; }
-    .timer-fill { height: 100%; background: #10b981; width: 0%; transition: width 1s linear; }
-
-    /* Activity 1: Matching Game */
-    .matching-game-container { display: flex; justify-content: space-between; gap: 20px; max-width: 800px; margin: 0 auto; flex-wrap: wrap; }
-    .column { flex: 1; display: flex; flex-direction: column; gap: 15px; }
-    .match-card {
-        background: white; padding: 15px; border-radius: 10px; border: 2px solid #e5e7eb; cursor: pointer;
-        text-align: center; transition: all 0.3s; font-weight: 600; color: #374151; position: relative;
-    }
-    .match-card:hover { border-color: var(--primary); background: #f0f9ff; }
-    .match-card.selected { border-color: var(--accent); background: #fffbeb; box-shadow: 0 0 10px rgba(212, 175, 55, 0.5); }
-    .match-card.matched { border-color: #9ca3af; background: #f3f4f6; color: #9ca3af; cursor: default; } 
-    .match-card.correct-reveal { border-color: #10b981; background: #d1fae5; color: #065f46; } 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department of Transportation</title>
     
-    /* Activity 2: Plan */
-    .tracker-container { background: white; padding: 2rem; border-radius: 15px; margin-bottom: 2rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); }
-    .time-input-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem; text-align: center; transition: all 0.2s; }
-    .time-input-card:hover { border-color: var(--primary); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    .time-input { width: 100%; background: transparent; font-size: 2rem; font-weight: bold; color: var(--primary); text-align: center; border: none; outline: none; }
-    .intervention-card { background: white; padding: 1.5rem; border-radius: 16px; border: 2px solid #f3f4f6; cursor: pointer; transition: all 0.3s; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-    .intervention-card:hover { border-color: #1e3c72; transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-    .intervention-card.selected { border-color: #1e3c72; background: #eff6ff; }
-    .intervention-icon { font-size: 3rem; margin-bottom: 0.5rem; }
-    .plan-detail-card { background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%); border-left: 5px solid #1e3c72; padding: 2rem; margin-bottom: 1rem; border-radius: 0 12px 12px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.05); animation: slideUp 0.5s forwards; }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Allura&display=swap" rel="stylesheet">
 
-    /* Modern Certificate Design */
-    #certificate-container {
-        font-family: 'Poppins', sans-serif;
-        background: white;
-        position: relative;
-        overflow: hidden;
-        width: 1000px;
-        height: 750px;
-        margin: 0 auto;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-        color: black;
-    }
-    @media print {
-        @page { size: landscape; margin: 0; }
-        body, .app-container, .course-wrapper, .header, #admin-page { visibility: hidden; }
-        #certificate-container, #certificate-container * { visibility: visible; }
-        #certificate-container { position: absolute; left: 0; top: 0; width: 100%; height: 100%; margin: 0; box-shadow: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    }
-    .cert-bg {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        background: radial-gradient(circle at 10% 20%, rgba(0,61,130,0.05) 0%, transparent 20%),
-                    radial-gradient(circle at 90% 80%, rgba(212,175,55,0.05) 0%, transparent 20%);
-        z-index: 0;
-    }
-    .cert-decor-top-left {
-        position: absolute; top: 0; left: 0; width: 250px; height: 250px;
-        background: linear-gradient(135deg, #003d82 0%, transparent 50%);
-        clip-path: polygon(0 0, 100% 0, 0 100%);
-        z-index: 1;
-    }
-    .cert-decor-bottom-right {
-        position: absolute; bottom: 0; right: 0; width: 250px; height: 250px;
-        background: linear-gradient(315deg, #003d82 0%, transparent 50%);
-        clip-path: polygon(100% 100%, 0 100%, 100% 0);
-        z-index: 1;
-    }
-    .cert-frame {
-        position: absolute; top: 20px; left: 20px; right: 20px; bottom: 20px;
-        border: 2px solid #d4af37; /* Gold */
-        z-index: 2;
-        background: rgba(255,255,255,0.95);
-    }
-    .cert-content-layer {
-        position: relative; z-index: 3;
-        padding: 50px;
-        height: 100%;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-    }
-    .cert-title { font-family: 'Cinzel', serif; color: #003d82; letter-spacing: 5px; font-weight: 700; text-transform: uppercase; }
-    .cert-name { font-family: 'Playfair Display', serif; color: #1a1a1a; font-weight: 700; border-bottom: 2px solid #d4af37; padding: 0 40px 10px; display: inline-block; min-width: 600px; text-transform: uppercase; }
+    <style>
+        /* --- Global Resets & Variables --- */
+        :root {
+            --primary-color: #0b3d91; 
+            --primary-dark: #062a57; 
+            --accent-red: #d62828; 
+            --secondary-color: #4b82e4; 
+            --text-light: #ffffff;
+            --text-gray: #e6eefc;
+            --card-bg: #ffffff;
+            --card-text: #333333;
+            --dark-overlay: rgba(4, 18, 48, 0.65); 
+        }
 
-    /* Chatbot Fixed Bottom Right - SCROLLABLE */
-    .chatbot-toggler {
-      position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
-      background: var(--primary); border-radius: 50%; cursor: pointer; display: flex;
-      align-items: center; justify-content: center; color: white; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-      z-index: 9000; transition: transform 0.3s;
-    }
-    .chatbot-toggler:hover { transform: scale(1.1); }
-    .chatbot-window {
-      position: fixed; bottom: 100px; right: 30px; width: 380px; 
-      background: white; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); 
-      overflow: hidden; opacity: 0; pointer-events: none; transform: translateY(20px); 
-      transition: all 0.3s; z-index: 9000; display: flex; flex-direction: column;
-    }
-    .chatbot-window.show { opacity: 1; pointer-events: all; transform: translateY(0); }
-    .chat-header { background: var(--primary); color: white; padding: 1rem; display: flex; align-items: center; justify-content: space-between; }
-    .chat-body { height: 400px; overflow-y: auto; padding: 1rem; background: #f9fafb; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
-    .chat-body::-webkit-scrollbar { width: 6px; }
-    .chat-body::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
-    .chat-msg { padding: 10px 15px; border-radius: 12px; font-size: 0.85rem; max-width: 90%; line-height: 1.5; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-    .bot-msg { background: white; color: #374151; align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid #e5e7eb; }
-    .user-msg { background: #003d82; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-    .chat-btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; }
-    .chat-btn { font-size: 0.75rem; padding: 8px; border: 1px solid #003d82; color: #003d82; border-radius: 8px; background: white; cursor: pointer; transition: all 0.2s; text-align: center; }
-    .chat-btn:hover { background: #003d82; color: white; }
+        html {
+            scroll-behavior: smooth; 
+        }
 
-    /* Admin Page Overlay */
-    #admin-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f3f4f6; z-index: 10000; overflow-y: auto; display: none; }
-    #admin-page.active { display: block; }
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 20000; display: none; align-items: center; justify-content: center; }
-    .modal-box { background: white; padding: 2rem; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; }
-    .hidden { display: none; }
-    .shake { animation: shake 0.5s; }
-    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-  </style>
- </head>
- <body>
-  
-  <div class="app-container" id="main-app">
-    <div class="course-wrapper relative">
-      
-      <div class="header">
-        <div class="header-content flex items-center gap-4">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Department_of_Transportation_%28Philippines%29.svg/2048px-Department_of_Transportation_%28Philippines%29.svg.png" alt="DOTr" class="logo">
-          <div class="text-left hidden md:block">
-            <h1 class="text-lg md:text-xl font-bold m-0">DOTr Digital Well-Being</h1>
-            <p class="text-xs md:text-sm opacity-90 m-0">Kagawaran ng Transportasyon</p>
-          </div>
-        </div>
-        <div id="user-controls" class="hidden flex items-center gap-2">
-          <span class="text-sm font-semibold hidden md:inline mr-2 text-white/90">👤 <span id="display-name">User</span></span>
-          <button onclick="showAdminLogin()" class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm transition font-bold"><i class="fas fa-lock"></i> Admin</button>
-          <button onclick="handleLogout()" class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-sm transition border border-white text-white">Logout</button>
-        </div>
-      </div>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-      <div id="main-nav" class="nav-tabs hidden">
-        <div class="nav-tab active" id="tab-intro" onclick="switchTab('intro')">🏠 Introduksyon</div>
-        <div class="nav-tab disabled" id="tab-pretest" onclick="switchTab('pretest')">📝 Pre-Test <span id="badge-pretest" class="status-badge hidden"></span></div>
-        <div class="nav-tab disabled" id="tab-module1" onclick="switchTab('module1')">📺 Bahagi 1</div>
-        <div class="nav-tab disabled" id="tab-activity1" onclick="switchTab('activity1')">🧩 Activity 1 <span id="badge-act1" class="status-badge hidden"></span></div>
-        <div class="nav-tab disabled" id="tab-module2" onclick="switchTab('module2')">📺 Bahagi 2</div>
-        <div class="nav-tab disabled" id="tab-activity2" onclick="switchTab('activity2')">📊 Plan <span id="badge-act2" class="status-badge hidden"></span></div>
-        <div class="nav-tab disabled" id="tab-posttest" onclick="switchTab('posttest')">🎓 Post-Test <span id="badge-posttest" class="status-badge hidden"></span></div>
-        <div class="nav-tab disabled" id="tab-eval" onclick="switchTab('eval')">📋 Ebalwasyon</div>
-        <div class="nav-tab disabled" id="tab-cert" onclick="switchTab('cert')">🏆 Sertipiko</div>
-      </div>
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--card-text);
+            overflow-x: hidden;
+            background-color: #f8f9fa;
+        }
 
-      <div class="main-content relative">
+        /* --- Header Styles --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 50px;
+            background-color: #ffffff;
+            position: relative;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--primary-color);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+            color: var(--primary-color);
+        }
+
+        nav {
+            margin-left: auto;
+            margin-right: 20px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #555555;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            color: var(--primary-color);
+        }
+
+        nav ul li a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--accent-red);
+        }
+
+        /* --- Top Hero Section --- */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            height: 50vh; 
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-color: var(--primary-dark);
+        }
+
+        .video-bg-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .video-bg-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.5s ease-in-out;
+            opacity: 1;
+        }
+
+        .video-bg-container video.fade-out {
+            opacity: 0;
+        }
+
+        .video-bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-overlay);
+            z-index: 1;
+        }
+
+        .dotr-logo-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            height: 85%;
+            max-width: 90%;
+            opacity: 0.12;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 5;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .hero-content h1 {
+            font-size: clamp(3rem, 6vw, 5rem); /* Increased font size here */
+            line-height: 1.15;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0px 4px 15px rgba(0,0,0,0.4);
+        }
+
+        .highlight {
+            color: #ffcc00; 
+        }
+
+        /* --- Gear Up Banner Section (Pure Code) --- */
+        .gear-up-banner {
+            width: 100%;
+            height: 33.33vh;
+            min-height: 220px;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 20;
+        }
+
+        .gear-up-content {
+            position: relative;
+            z-index: 5;
+            text-align: center;
+            color: var(--primary-color);
+            padding: 0 20px;
+        }
+
+        .gear-up-content h2 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .gear-up-content p {
+            font-family: 'Allura', cursive; /* Applied the new font */
+            font-size: clamp(1.8rem, 3vw, 2.5rem); /* Scaled properly for Allura's natural size */
+            font-weight: 400; 
+            line-height: 1.2;
+            color: var(--primary-color);
+        }
+
+        /* Scalable Tech Backgrounds using inline SVG */
+        .tech-graphics {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 350px;
+            z-index: 1;
+            pointer-events: none;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .tech-left {
+            left: 0;
+            background-position: left center;
+            background-image: url("data:image/svg+xml,%3Csvg width='300' height='250' viewBox='0 0 300 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='%2300d4ff' stroke-width='2.5' fill='none' stroke-linecap='round'%3E%3Cpath d='M-10,40 L60,40 L90,70 L180,70'/%3E%3Ccircle cx='180' cy='70' r='6' fill='%2300d4ff'/%3E%3Cpath d='M-10,210 L50,210 L80,180 L220,180'/%3E%3Ccircle cx='220' cy='180' r='7' fill='%2300d4ff'/%3E%3Cpath d='M-10,120 L30,120 L50,140 L110,140' opacity='0.6'/%3E%3Ccircle cx='110' cy='140' r='4' fill='%2300d4ff' opacity='0.6'/%3E%3Cpolygon points='50,130 70,95 110,95 130,130 110,165 70,165' opacity='0.4'/%3E%3Cpolygon points='15,180 35,145 75,145 95,180 75,215 35,215' opacity='0.2'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .tech-right {
+            right: 0;
+            background-position: right center;
+            background-image: url("data:image/svg+xml,%3Csvg width='300' height='250' viewBox='0 0 300 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='%2300d4ff' stroke-width='2.5' fill='none' stroke-linecap='round'%3E%3Cpath d='M310,50 L240,50 L210,80 L120,80'/%3E%3Ccircle cx='120' cy='80' r='6' fill='%2300d4ff'/%3E%3Cpath d='M310,220 L260,220 L230,190 L90,190'/%3E%3Ccircle cx='90' cy='190' r='7' fill='%2300d4ff'/%3E%3Cpath d='M310,130 L280,130 L260,150 L200,150' opacity='0.6'/%3E%3Ccircle cx='200' cy='150' r='4' fill='%2300d4ff' opacity='0.6'/%3E%3Cpolygon points='250,140 230,105 190,105 170,140 190,175 230,175' opacity='0.4'/%3E%3Cpolygon points='285,190 265,155 225,155 205,190 225,225 265,225' opacity='0.2'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* --- Video Showcase Section --- */
+        .video-showcase-section {
+            background-color: var(--primary-dark);
+            padding: 80px 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-showcase-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 50px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .video-text-content {
+            flex: 1;
+            color: var(--text-light);
+        }
+
+        .video-text-content h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 15px;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        .video-text-content h2 span {
+            color: #ffcc00; 
+        }
+
+        .video-text-content p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        /* Update to use counters for numbering */
+        .program-highlights {
+            list-style: none;
+            margin-bottom: 0;
+            counter-reset: highlight-counter; 
+            padding-left: 0;
+        }
+
+        .program-highlights li {
+            font-size: 1.05rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            counter-increment: highlight-counter; 
+        }
+
+        .program-highlights li::before {
+            content: counter(highlight-counter);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffcc00;
+            color: #111; 
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            font-size: 0.95rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .video-frame-wrapper {
+            flex: 0 0 auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .phone-frame {
+            width: 300px;
+            height: 533px; 
+            border: 8px solid #ffffff;
+            border-radius: 25px;
+            background-color: #000;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .phone-frame video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; 
+            background-color: #000;
+        }
+
+        .mute-toggle-btn {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .mute-toggle-btn:hover {
+            background-color: var(--accent-red);
+            transform: scale(1.1);
+        }
+
+        .mute-toggle-btn i {
+            font-size: 1.2rem;
+        }
+
+        /* Abstract Background Graphics */
+        .deco-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(75, 130, 228, 0.15), rgba(11, 61, 145, 0));
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .deco-1 {
+            width: 450px;
+            height: 450px;
+            top: -150px;
+            left: -150px;
+        }
+
+        .deco-2 {
+            width: 700px;
+            height: 700px;
+            bottom: -250px;
+            right: -200px;
+        }
+
+        @media (max-width: 900px) {
+            .video-showcase-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            .program-highlights li {
+                justify-content: center;
+            }
+        }
+
+        /* --- Bottom Layout Sections --- */
+        .bottom-section-wrapper {
+            position: relative;
+            width: 100%;
+            background: linear-gradient(135deg, #eaf4fc 0%, #cce0f0 100%);
+            padding: 80px 0;
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        .bottom-section-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(rgba(11, 61, 145, 0.05) 2px, transparent 2px);
+            background-size: 30px 30px;
+            z-index: 1;
+        }
+
+        .bottom-section-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 85% 10%, rgba(255, 255, 255, 0.7) 0%, transparent 40%),
+                radial-gradient(circle at 10% 90%, rgba(75, 130, 228, 0.15) 0%, transparent 50%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .modern-wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 250px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='rgba(255, 255, 255, 0.4)' fill-opacity='1' d='M0,192L48,181.3C96,171,192,149,288,154.7C384,160,480,192,576,181.3C672,171,768,117,864,112C960,107,1056,149,1152,165.3C1248,181,1344,171,1392,165.3L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: bottom;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .bottom-content-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 50px;
+            position: relative;
+            z-index: 5; 
+        }
+
+        /* --- Left Side: Custom Dynamic Calendar Design --- */
+        .calendar-wrapper {
+            flex: 1;
+            min-width: 480px;
+            max-width: 550px;
+            height: 380px;
+            background-color: #124386; 
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(11, 61, 145, 0.2); 
+            border: 1px solid rgba(255,255,255,0.4); 
+        }
+
+        .cal-image-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 45%; 
+            height: 100%;
+            background-color: white; 
+            clip-path: polygon(0 0, 100% 0, 60% 100%, 0% 100%);
+            z-index: 1;
+        }
+
+        .cal-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 98%; 
+            height: 100%;
+            background-image: url('columbia-tower.png'); 
+            background-color: #d1d5db; 
+            background-size: cover;
+            background-position: center;
+            clip-path: polygon(0 0, 100% 0, 60% 100%, 0% 100%);
+        }
+
+        .cal-header-banner {
+            position: absolute;
+            top: 25px;
+            right: 0;
+            width: 65%; 
+            height: 65px;
+            background-color: #ffffff;
+            clip-path: polygon(8% 0, 100% 0, 100% 100%, 0% 100%);
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; 
+            padding: 0 20px 0 35px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .month-nav-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .month-nav-controls i {
+            cursor: pointer;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            transition: color 0.2s;
+        }
+
+        .month-nav-controls i:hover {
+            color: var(--accent-red);
+        }
+
+        .cal-header-banner h2 {
+            color: #124386;
+            font-size: 1.45rem;
+            font-weight: 800;
+            margin-right: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        .cal-header-banner img {
+            height: 38px;
+        }
+
+        .cal-body {
+            position: absolute;
+            bottom: 30px;
+            right: 20px; 
+            width: 52%; 
+            z-index: 2;
+        }
+
+        .cal-weekdays {
+            background-color: #ffffff;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            padding: 8px 0;
+            margin-bottom: 12px;
+            clip-path: polygon(2% 0, 100% 0, 100% 100%, 0% 100%);
+        }
+
+        .cal-weekdays span {
+            color: #124386;
+            text-align: center;
+            font-weight: 800;
+            font-size: 0.85rem;
+        }
+
+        .cal-dates {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            row-gap: 8px;
+            text-align: center;
+        }
+
+        .cal-date-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 4px 0;
+            transition: all 0.2s;
+            border-radius: 4px;
+        }
+
+        .cal-date-container:hover {
+            background-color: rgba(255,255,255,0.2);
+            transform: scale(1.1);
+        }
+
+        .cal-date {
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 0.95rem;
+            line-height: 1;
+        }
+
+        .cal-date-container.today .cal-date {
+            background-color: #ffcc00;
+            color: #111;
+            font-weight: 800;
+            padding: 4px 8px;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .cal-date-container.today:hover .cal-date {
+            background-color: #e6b800;
+        }
+
+        .event-dot {
+            width: 4px;
+            height: 4px;
+            background-color: #ffcc00;
+            border-radius: 50%;
+            margin-top: 3px;
+        }
+
+        .empty-slot {
+            visibility: hidden;
+        }
+
+        /* --- Right Side: Carousel Styles --- */
+        .cards-container {
+            flex: 1;
+            position: relative;
+            height: 500px; 
+            min-width: 580px; 
+            max-width: 650px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .travel-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            color: var(--card-text);
+            position: absolute;
+            width: 300px; 
+            transition: all 0.5s ease-in-out;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .travel-card img {
+            width: 100%;
+            height: 180px; 
+            object-fit: cover;
+            border-bottom: 4px solid var(--primary-color);
+        }
+
+        .card-body {
+            padding: 25px 22px; 
+            text-align: left;
+        }
+
+        .card-body h3 {
+            font-size: 1.15rem; 
+            line-height: 1.4;
+            margin-bottom: 25px;
+            color: #111;
+            font-weight: 700;
+        }
+
+        .btn-read-more {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            text-decoration: none;
+            padding: 10px 20px; 
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            gap: 8px;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .btn-read-more:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .card-far-left {
+            z-index: 1;
+            transform: translateX(-200px) scale(0.75);
+            opacity: 0.3;
+            pointer-events: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .card-left {
+            z-index: 3;
+            transform: translateX(-110px) scale(0.85);
+            opacity: 0.8;
+            pointer-events: auto;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+        .card-active {
+            z-index: 5;
+            transform: translateX(0px) scale(1.05);
+            opacity: 1;
+            pointer-events: auto;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .card-right {
+            z-index: 3;
+            transform: translateX(110px) scale(0.85);
+            opacity: 0.8;
+            pointer-events: auto;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+        .card-far-right {
+            z-index: 1;
+            transform: translateX(200px) scale(0.75);
+            opacity: 0.3;
+            pointer-events: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #ffffff;
+            color: var(--primary-color);
+            border: 1px solid rgba(0,0,0,0.1);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-arrow:hover { 
+            background-color: var(--primary-color); 
+            color: #ffffff;
+        }
         
-        <div id="login-section" class="section active max-w-md mx-auto">
-            <div class="bg-white p-8 rounded-2xl shadow-lg text-center mt-10">
-                <h2 class="text-2xl font-bold text-[#003d82] mb-2">Mag-login</h2>
-                <p class="text-gray-500 mb-6">Ipasok ang email upang magsimula.</p>
-                <form onsubmit="handleLogin(event)" class="text-left">
-                    <div class="mb-4">
-                        <label class="form-label">Email Address</label>
-                        <input type="email" id="login-email" class="form-input" placeholder="email@dotr.gov.ph" required>
-                    </div>
-                    <button type="submit" id="login-submit-btn" class="btn w-full">Pumasok</button>
-                </form>
+        .left-arrow { left: -35px; } 
+        .right-arrow { right: -35px; }
+
+        /* --- Training Details Modal Styles --- */
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.7);
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.show { display: flex; opacity: 1; }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            color: var(--card-text);
+            padding: 35px 40px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .modal.show .modal-content { transform: translateY(0); }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 32px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+            z-index: 5;
+            transition: 0.2s;
+        }
+        
+        .close-btn:hover { color: var(--accent-red); }
+
+        .modal-header-title {
+            color: var(--primary-color);
+            font-weight: 800;
+            font-size: 1.6rem;
+            text-align: center;
+            margin-bottom: 5px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .modal-date-subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 25px;
+            margin-top: 15px;
+        }
+
+        .training-item {
+            background: #f9fbff;
+            border-left: 4px solid var(--secondary-color);
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .training-item h4 {
+            color: #111;
+            font-size: 1.05rem;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .training-item p {
+            font-size: 0.85rem;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .training-item strong {
+            color: var(--primary-color);
+        }
+
+        .no-event-msg {
+            text-align: center;
+            color: #777;
+            font-style: italic;
+            padding: 20px 0;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Department_of_Transportation_%28Philippines%29.svg" alt="DOTr Logo" style="height: 40px;">
+            <div class="logo-text">
+                <span>DOTr - HRDD</span>
+                <span style="font-size: 0.85rem; font-weight: 500; color: #666;">Learning & Development</span>
             </div>
         </div>
+        <nav>
+            <ul>
+                <li><a href="#" class="active">Home</a></li>
+                <li><a href="#contact-footer">Contact Us</a></li>
+            </ul>
+        </nav>
+    </header>
 
-        <div id="attendance-section" class="section max-w-2xl mx-auto">
-          <div class="bg-white p-8 rounded-2xl shadow-lg">
-            <h2 class="text-2xl font-bold text-[#003d82] mb-2 text-center">Attendance Form</h2>
-            <p class="text-gray-500 mb-6 text-center">Bago ang iyong account. Mag-register para sa sertipiko.</p>
-            <form id="attendance-form" class="space-y-4" onsubmit="handleAttendance(event)">
-              <div class="mb-4">
-                <label class="form-label">Training/Course Title</label>
-                <input type="text" class="form-input bg-gray-100" value="Digitalization and Psychological Well-Being" readonly>
-              </div>
-              <div class="grid md:grid-cols-2 gap-4">
-                <div>
-                    <label class="form-label">Full Name</label>
-                    <input type="text" id="reg-name" class="form-input" placeholder="JUAN A. DELA CRUZ" required>
-                    <p class="text-xs text-gray-500 mt-1">Format: FIRST NAME, MIDDLE INITIAL, LAST NAME. Ito ang lalabas sa Certificate.</p>
-                </div>
-                <div><label class="form-label">Email Address</label><input type="email" id="reg-email" class="form-input" disabled></div>
-              </div>
-              <div class="grid md:grid-cols-2 gap-4">
-                <div>
-                    <label class="form-label">Gender</label>
-                    <select id="reg-gender" class="form-input" required>
-                        <option value="">Select...</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Non-binary">Non-binary</option>
-                        <option value="Prefer not to say">Prefer not to say</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="form-label">Type of Employment</label>
-                    <select id="reg-employment" class="form-input" required>
-                        <option value="">Select...</option>
-                        <option value="Permanent">Permanent</option>
-                        <option value="Co-terminus">Co-terminus</option>
-                        <option value="Contractual">Contractual</option>
-                        <option value="Contract of Service">Contract of Service</option>
-                        <option value="Job Order">Job Order</option>
-                    </select>
-                </div>
-              </div>
-              <div class="grid md:grid-cols-2 gap-4">
-                  <div><label class="form-label">Position</label><input type="text" id="reg-position" class="form-input" required></div>
-                  <div><label class="form-label">Office/Division</label><input type="text" id="reg-office" class="form-input" required></div>
-              </div>
-              <div class="grid md:grid-cols-2 gap-4">
-                  <div><label class="form-label">Complete ID Number</label><input type="text" id="reg-id" class="form-input" required></div>
-                  <div><label class="form-label">Mobile Number</label><input type="tel" id="reg-mobile" class="form-input" required></div>
-              </div>
-              <button type="submit" id="attendance-submit-btn" class="btn w-full mt-4">Simulan ang Training</button>
-            </form>
-          </div>
+    <section class="hero-section">
+        <div class="video-bg-container">
+            <video id="bgVideo" autoplay muted playsinline preload="metadata">
+                <source src="" type="video/mp4">
+            </video>
         </div>
-
-        <div id="intro" class="section">
-          <div class="max-w-4xl mx-auto">
-            <h2 class="text-3xl font-bold text-[#003d82] mb-6 text-center">Introduksyon</h2>
-            <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 text-gray-700 leading-relaxed text-justify space-y-4">
-              <p>Sa mabilis na pag-unlad ng ating teknolohiya, hindi maitatanggi na tayo ay nasa isang natatanging yugto ng kasaysayan—ang digital age. Mula sa paglaganap ng social media hanggang sa pagsibol ng digitalisasyon, ang lahat ay tila abot-kamay na natin sa isang pindot lamang. Ngunit sa likod ng mga modernong kaginhawaang ito, nararapat nating suriin: <strong>Sapat pa ba ang pangangalaga natin sa ating kalusugang mental?</strong> Ito ay isang mahalagang paalala o self-check upang masuri kung ang ating mga kasalukuyang paraan ng pagharap sa mga mental health issues ay epektibo pa sa gitna ng mabilis na pagbabago ng mundo at sa gitna ng digitalisasyon. Sa pamamagitan ng tanong na ito, mas mabibigyang-diin natin ang pangangailangang bumuo ng mga bagong estratehiya sa trabaho at sa buhay, na magtitiyak na hindi napag-iiwanan ang ating well-being habang tayo ay sumasabay sa agos ng modernisasyon.</p>
-              <p>Sa loob ng gawaing ito, tatalakayin natin ang mahahalagang aspeto ng ating kapakanan sa gitna ng teknolohiya:</p>
-              <ul class="list-disc pl-8 space-y-2 text-[#003d82]">
-                <li><strong>Modernong Interbensyon:</strong> Susuriin natin kung paano naging tulay ang teknolohiya upang mas mapadali ang access sa mental health services, gaya ng online counseling at virtual reality (VR) therapy.</li>
-                <li><strong>Impluwensya ng Digital Consumption:</strong> Pag-unawa sa epekto ng screen time at blue light sa kalidad ng ating pahinga at pagtulog.</li>
-                <li><strong>Sosyal na Implikasyon:</strong> Pagtalakay sa social media comparison at ang hamon ng information overload na madalas mauwi sa pag-aalinlangan at pag-iisip nang labis.</li>
-                <li><strong>Kalinangan sa Trabaho:</strong> Pagkilala sa kahalagahan ng work-life balance at ang pagbuo ng mga polisiya na magpoprotekta sa ating kapakanan laban sa "always-on culture."</li>
-              </ul>
-              <p>Gabay natin si Sir Jose Mari "Jomar" Hulleza. Handa na ba kayo? Muli, welcome sa ating training!</p>
-            </div>
-            <div class="text-center mt-8"><button onclick="unlockAndSwitch('pretest')" class="btn text-lg px-8">Magsimula sa Pre-Test ➔</button></div>
-          </div>
+        <div class="video-bg-overlay"></div>
+        
+        <img class="dotr-logo-overlay" src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Department_of_Transportation_%28Philippines%29.svg" alt="DOTr Watermark">
+        
+        <div class="hero-content">
+            <h1>DEVELOPING<br><span class="highlight">PROFESSIONAL MOBILITY</span></h1>
         </div>
+    </section>
 
-        <div id="pretest" class="section">
-           <h2 class="text-2xl font-bold text-[#003d82] mb-4 text-center">Paunang Pagsusulit</h2>
-           <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 text-blue-900 text-sm max-w-4xl mx-auto">
-             <strong>Panuto:</strong> Basahin ang bawat tanong o pahayag. Piliin ang titik ng tamang sagot at i-click ito sa inilaang puwang. Isang sagot lamang sa bawat bilang.
-           </div>
-           <div class="max-w-4xl mx-auto space-y-8">
-               <h3 class="font-bold text-lg text-gray-600 border-b pb-2">Part 1: Multiple Choice</h3>
-               <div id="pretest-part1" class="space-y-6"></div>
-               <h3 class="font-bold text-lg text-gray-600 border-b pb-2 pt-4">Part 2: Tama o Mali</h3>
-               <div id="pretest-part2" class="space-y-6"></div>
-           </div>
-           <div class="text-center mt-8"><button onclick="submitPreTest()" id="btn-submit-pretest" class="btn">Isumite ang Pre-Test</button></div>
+    <section class="gear-up-banner">
+        <div class="tech-graphics tech-left"></div>
+        <div class="gear-up-content">
+            <h2>GEAR UP!</h2>
+            <p>Our journey to professional excellence begins here...</p>
         </div>
+        <div class="tech-graphics tech-right"></div>
+    </section>
 
-        <div id="module1" class="section">
-          <div class="max-w-4xl mx-auto">
-            <h2 class="text-2xl font-bold text-[#003d82] mb-2">Module 1: Pag-unawa sa Epekto ng Digital</h2>
-            <div class="bg-yellow-50 text-yellow-800 p-3 rounded mb-4 text-sm flex items-center gap-2">
-              <i class="fas fa-clock"></i> <span id="timer-msg-1">Panoorin ang video. (Completion required: 1,734s)</span>
-            </div>
-            <div class="video-wrapper">
-              <iframe src="https://drive.google.com/file/d/1sF0sarTqqp2hUWoXFqi18HZ5hCuPzY5v/preview" allowfullscreen></iframe>
-            </div>
-            <div class="timer-bar"><div id="timer-fill-1" class="timer-fill"></div></div>
-            <div class="text-right"><button id="btn-to-act1" class="btn opacity-50 cursor-not-allowed" disabled onclick="unlockAndSwitch('activity1')">Pumunta sa Activity 1 <i class="fas fa-lock ml-2"></i></button></div>
-          </div>
-        </div>
-
-        <div id="activity1" class="section">
-            <div class="max-w-4xl mx-auto text-center">
-                <h2 class="text-2xl font-bold text-[#003d82] mb-4">Interactive Activity: Digital Match</h2>
-                <p class="text-gray-600 mb-6">Itugma ang sanhi (kaliwa) sa epekto (kanan). I-click ang item sa kaliwa, tapos ang katumbas sa kanan. Pindutin ang "Check Answers" kapag tapos na. (Passing: 3/4)</p>
+    <section class="video-showcase-section">
+        <div class="deco-shape deco-1"></div>
+        <div class="deco-shape deco-2"></div>
+        
+        <div class="video-showcase-container">
+            <div class="video-text-content">
+                <h2>1st QUARTER CY 2026<br><span>L&D Programs</span></h2>
+                <p>Watch our latest advisory to explore upcoming training opportunities designed to enhance your skills, knowledge, and commitment to public service.</p>
                 
-                <div class="matching-game-container mb-8">
-                    <div class="column" id="match-col-a"></div>
-                    <div class="column" id="match-col-b"></div>
-                </div>
-                
-                <button onclick="checkAllMatches()" class="btn mb-4">Check Answers</button>
-                <div id="match-feedback" class="h-6 font-bold text-[#003d82] mb-4"></div>
+                <ol class="program-highlights">
+                    <li>Service Excellence & Citizen's Charter</li>
+                    <li>Digitalization & Psychological Well-being</li>
+                    <li>Continuing Professional Development</li>
+                    <li>Streamlining Transactions</li>
+                    <li>Leadership in Shaping Culture</li>
+                </ol>
 
-                <div id="ref1-form" class="hidden bg-white p-6 rounded-xl shadow border-t-4 border-[#003d82] text-left">
-                    <h3 class="font-bold text-lg mb-4 text-[#003d82]">💭 Repleksyon (Part 1) - (Passing: 25/30)</h3>
-                    <div class="space-y-4">
-                        <label class="form-label">1. Sa gitna ng mundong tila hindi humihinto sa pag-scroll, gaano kahirap o kadali para sa iyo ang magpatupad ng disiplina sa paggamit ng digital devices? Anong mga aspeto ng iyong kapaligiran o lifestyle ang sa tingin mo ay magiging pinakamalaking hadlang sa iyong pagbabago?</label>
-                        <textarea id="ref1-q1" class="w-full border p-2 rounded h-24" placeholder="Sagot..."></textarea>
-                        <label class="form-label">2. Ano ang iyong pananaw sa epekto ng teknolohiya sa ating relasyon sa kapwa? Paano nito binabago ang paraan ng iyong pakikipag-ugnayan sa mga taong nakapaligid sa iyo?</label>
-                        <textarea id="ref1-q2" class="w-full border p-2 rounded h-24" placeholder="Sagot..."></textarea>
-                        <button onclick="submitReflection(1)" id="btn-ref1" class="btn w-full">Isumite at Ituloy</button>
-                        <div id="ref1-feedback" class="text-sm font-semibold mt-2"></div>
-                    </div>
-                </div>
             </div>
-        </div>
-
-        <div id="module2" class="section">
-          <div class="max-w-4xl mx-auto">
-            <h2 class="text-2xl font-bold text-[#003d82] mb-2">Module 2: Pagbuo ng Digital Wellness</h2>
-            <div class="bg-yellow-50 text-yellow-800 p-3 rounded mb-4 text-sm flex items-center gap-2">
-              <i class="fas fa-clock"></i> <span id="timer-msg-2">Panoorin ang video. (Completion required: 1,215s)</span>
-            </div>
-            <div class="video-wrapper">
-              <iframe src="https://drive.google.com/file/d/1up0jnfYmYXewXfRcbXk749FUZiMLJMla/preview" allowfullscreen></iframe>
-            </div>
-            <div class="timer-bar"><div id="timer-fill-2" class="timer-fill"></div></div>
-            <div class="text-right"><button id="btn-to-act2" class="btn opacity-50 cursor-not-allowed" disabled onclick="unlockAndSwitch('activity2')">Pumunta sa Activity 2 <i class="fas fa-lock ml-2"></i></button></div>
-          </div>
-        </div>
-
-        <div id="activity2" class="section">
-            <div class="max-w-4xl mx-auto">
-                <h2 class="text-2xl font-bold text-[#003d82] mb-4 text-center">Your Digital Intervention Plan</h2>
-                
-                <div id="step-calc" class="tracker-container text-center">
-                    <h3 class="font-bold mb-6 text-gray-600 text-lg">Step 1: Screen Time Calculator (Oras kada araw)</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                        <div class="time-input-card">
-                            <i class="fab fa-facebook text-2xl text-blue-600 mb-2"></i>
-                            <input type="number" id="st-social" class="time-input" placeholder="0" oninput="calcTotal()">
-                            <p class="text-xs text-gray-500 mt-1">Social Media</p>
-                        </div>
-                         <div class="time-input-card">
-                            <i class="fas fa-briefcase text-2xl text-gray-600 mb-2"></i>
-                            <input type="number" id="st-work" class="time-input" placeholder="0" oninput="calcTotal()">
-                            <p class="text-xs text-gray-500 mt-1">Work/Email</p>
-                        </div>
-                         <div class="time-input-card">
-                            <i class="fas fa-gamepad text-2xl text-purple-600 mb-2"></i>
-                            <input type="number" id="st-game" class="time-input" placeholder="0" oninput="calcTotal()">
-                            <p class="text-xs text-gray-500 mt-1">Gaming</p>
-                        </div>
-                         <div class="time-input-card">
-                            <i class="fas fa-tv text-2xl text-red-600 mb-2"></i>
-                            <input type="number" id="st-stream" class="time-input" placeholder="0" oninput="calcTotal()">
-                            <p class="text-xs text-gray-500 mt-1">Streaming</p>
-                        </div>
-                    </div>
-                    <div class="bg-blue-50 p-4 rounded-xl mb-6 inline-block w-full md:w-1/2">
-                        <p class="text-gray-600 font-semibold">Total Daily Screen Time</p>
-                        <div id="st-total" class="text-4xl font-bold text-[#003d82]">0</div>
-                        <p class="text-sm text-gray-500">Hours</p>
-                    </div>
-                    <div><button onclick="document.getElementById('step-calc').classList.add('hidden'); document.getElementById('step-select').classList.remove('hidden');" class="btn">Next: Choose Strategy</button></div>
-                </div>
-
-                <div id="step-select" class="hidden">
-                    <h3 class="font-bold text-center mb-6 text-gray-600 text-lg">Step 2: Choose Your Strategy</h3>
-                    <div class="grid md:grid-cols-2 gap-4 mb-6">
-                        <div class="intervention-card" onclick="selPlan(this, 'Gradual')"><div class="intervention-icon">🌱</div><div class="font-bold">Unti-unting Pagbawas</div><p class="text-xs text-gray-500 mt-2">Dahan-dahang bawasan ang oras sa screen.</p></div>
-                        <div class="intervention-card" onclick="selPlan(this, 'Detox')"><div class="intervention-icon">🛑</div><div class="font-bold">Digital Detox</div><p class="text-xs text-gray-500 mt-2">Pansamantalang pagtigil sa paggamit.</p></div>
-                        <div class="intervention-card" onclick="selPlan(this, 'Replacement')"><div class="intervention-icon">🏃</div><div class="font-bold">Pagpapalit Gawain</div><p class="text-xs text-gray-500 mt-2">Ipalit ang pisikal na gawain sa scrolling.</p></div>
-                        <div class="intervention-card" onclick="selPlan(this, 'Mindful')"><div class="intervention-icon">🧘</div><div class="font-bold">Mindful na Paggamit</div><p class="text-xs text-gray-500 mt-2">Paggamit nang may tiyak na layunin.</p></div>
-                    </div>
-                </div>
-
-                <div id="step-result" class="hidden">
-                    <div class="plan-detail-card">
-                        <h3 class="font-bold text-lg text-[#003d82] mb-4">✅ Ang Iyong Plano: <span id="plan-name"></span></h3>
-                        <p class="text-sm text-gray-600 mb-4 font-semibold">Narito ang 10 hakbang na dapat mong gawin:</p>
-                        <ul id="plan-list" class="space-y-3 text-sm text-gray-700 list-disc pl-5"></ul>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-xl shadow border-t-4 border-[#003d82] text-left mt-6">
-                        <h3 class="font-bold text-lg mb-4 text-[#003d82]">💭 Repleksyon (Part 2) - (Passing: 25/30)</h3>
-                        <div class="space-y-4">
-                            <label class="form-label">1. Kung bibigyan ka ng pagkakataong muling idisenyo ang iyong pakikipag-ugnayan sa teknolohiya, anong mga ideal na 'digital habits' ang sa tingin mo ay magdadala ng pinakamalaking epekto sa iyong pagkatao, at bakit?</label>
-                            <textarea id="ref2-q1" class="w-full border p-2 rounded h-24 mb-4" placeholder="Sagot..."></textarea>
-                            <label class="form-label">2. Sa iyong palagay, kailan nagiging 'toxic' o nakakasama ang social media sa iyong mental na kalusugan, at paano mo binabalanse ang pangangailangang maging konektado online upang mapanatili ang iyong inner peace?</label>
-                            <textarea id="ref2-q2" class="w-full border p-2 rounded h-24 mb-4" placeholder="Sagot..."></textarea>
-                            <button onclick="submitReflection(2)" id="btn-ref2" class="btn w-full">Tapusin at Pumunta sa Post-Test</button>
-                             <div id="ref2-feedback" class="text-sm font-semibold mt-2"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="posttest" class="section">
-           <h2 class="text-2xl font-bold text-[#003d82] mb-4 text-center">Huling Pagsusulit</h2>
-           <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 text-red-900 text-sm max-w-4xl mx-auto">
-             <strong>Panuto:</strong> Basahin ang bawat tanong o pahayag. Piliin ang titik ng tamang sagot at i-click ito sa inilaang puwang. Isang sagot lamang sa bawat bilang. (Passing: 90%)
-           </div>
-           <div class="max-w-4xl mx-auto space-y-8">
-               <h3 class="font-bold text-lg text-gray-600 border-b pb-2">Part 1: Multiple Choice</h3>
-               <div id="posttest-part1" class="space-y-6"></div>
-               <h3 class="font-bold text-lg text-gray-600 border-b pb-2 pt-4">Part 2: Tama o Mali</h3>
-               <div id="posttest-part2" class="space-y-6"></div>
-           </div>
-           <div class="text-center mt-8"><button onclick="submitPostTest()" class="btn">Isumite ang Post-Test</button></div>
-        </div>
-
-        <div id="eval" class="section">
-            <h2 class="text-2xl font-bold text-[#003d82] mb-4 text-center">Pagsusuri ng Programa (Evaluation)</h2>
-            <form id="eval-form" onsubmit="submitEvaluation(event)" class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow space-y-6">
-                <div id="rating-container" class="space-y-6"></div>
-                <div><label class="form-label">Magbigay ng mga pananaw sa pagkatuto na angkop sa iyong trabaho.</label><textarea id="eval-insight" class="w-full border p-2 rounded" required></textarea></div>
-                <div><label class="form-label">Magbigay ng mungkahi upang mapabuti ang programang ito.</label><textarea id="eval-suggest" class="w-full border p-2 rounded" required></textarea></div>
-                <button type="submit" class="btn w-full">Isumite at Kunin ang Sertipiko</button>
-            </form>
-        </div>
-
-        <div id="cert" class="section">
-          <div class="max-w-4xl mx-auto text-center">
             
-            <div id="cert-header-container" class="bg-blue-50 border border-blue-200 p-6 rounded-xl mb-8 text-left">
+            <div class="video-frame-wrapper">
+                <div class="phone-frame">
+                    <video id="showcase-video" src="callforparticipants.mp4" autoplay loop muted playsinline></video>
+                    <button id="mute-toggle-btn" class="mute-toggle-btn" title="Mute / Unmute">
+                        <i class="fa-solid fa-volume-xmark"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="gear-up-banner">
+        <div class="tech-graphics tech-left"></div>
+        <div class="gear-up-content">
+            <h2>CALENDAR OF ACTIVITIES</h2>
+            <p>Plan ahead for your professional development!</p>
+        </div>
+        <div class="tech-graphics tech-right"></div>
+    </section>
+
+    <section class="bottom-section-wrapper">
+        <div class="modern-wave"></div>
+        
+        <div class="bottom-content-section">
+            
+            <div class="calendar-wrapper">
+                <div class="cal-image-container">
+                    <div class="cal-image"></div>
+                </div>
+                
+                <div class="cal-header-banner">
+                    <div class="month-nav-controls">
+                        <i class="fa-solid fa-chevron-left" id="prev-month-btn"></i>
+                        <i class="fa-solid fa-chevron-right" id="next-month-btn"></i>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <h2 id="calendar-month-year">MONTH YEAR</h2>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Department_of_Transportation_%28Philippines%29.svg" alt="DOTr Logo">
+                    </div>
                 </div>
 
-            <div id="certificate-container">
-                <div class="cert-bg"></div>
-                <div class="cert-decor-top-left"></div>
-                <div class="cert-decor-bottom-right"></div>
-                
-                <div class="cert-frame">
-                    <div class="cert-content-layer">
-                        <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Department_of_Transportation_%28Philippines%29.svg/2048px-Department_of_Transportation_%28Philippines%29.svg.png" style="width: 90px;">
-                            <img src="https://www.treasury.gov.ph/wp-content/uploads/2023/10/Logo-Bagong-Pilipinas.png" style="width: 90px;">
-                        </div>
-
-                        <div style="text-align: center; margin-bottom: 25px;">
-                            <h4 style="font-family: 'Poppins', sans-serif; letter-spacing: 3px; font-size: 0.8rem; color: #555;">REPUBLIC OF THE PHILIPPINES</h4>
-                            <h3 style="font-family: 'Cinzel', serif; font-weight: 700; font-size: 1.6rem; color: #003d82;">DEPARTMENT OF TRANSPORTATION</h3>
-                        </div>
-
-                        <h1 class="cert-title" style="font-size: 4rem; line-height: 1; margin-bottom: 5px;">CERTIFICATE</h1>
-                        <p style="font-family: 'Poppins', sans-serif; letter-spacing: 6px; text-transform: uppercase; color: #d32f2f; font-weight: 600; font-size: 0.9rem; margin-bottom: 30px;">of Completion</p>
-                        
-                        <p style="font-size: 1.1rem; margin-bottom: 5px;">is presented to</p>
-                        
-                        <h2 id="cert-name" class="cert-name" style="font-size: 2.8rem; text-transform: uppercase;">TRAINEE NAME</h2>
-                        
-                        <p style="font-size: 1rem; max-width: 800px; text-align: center; line-height: 1.6; margin-top: 15px;">
-                            for <span id="cert-gender">his/her</span> successful participation and completion of<br>
-                            <strong style="color: #003d82; font-size: 1.2rem; text-transform: uppercase;">The Influence of Digitalization on Psychological Well-Being</strong>
-                        </p>
-                        
-                        <p style="font-size: 0.9rem; margin-top: 10px; color: #555;">
-                            Given this <span id="cert-date" style="font-weight: bold; color: #000;"></span> at The Columbia Tower, Mandaluyong City.
-                        </p>
-
-                        <div style="width: 100%; display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto;">
-                            <div style="text-align: center;">
-                                <canvas id="qrcode-canvas" style="margin-bottom: 5px;"></canvas>
-                                <p style="font-size: 0.6rem; font-family: monospace;" id="cert-id">ID: 0000</p>
-                                <p style="font-size: 0.7rem; font-weight: bold; color: #003d82;">4 Hours Training Credit</p>
-                            </div>
-                            <div style="text-align: center; font-size: 0.7rem; color: #555;">
-                                <p style="margin-bottom: 2px;"><strong>Competency Completed:</strong></p>
-                                <p style="margin: 0;">Core Competency | Basic Level</p>
-                                <p style="margin: 0;">Quality Management</p>
-                            </div>
-                            <div style="text-align: center;">
-                                <div style="height: 40px;"></div>
-                                <div style="border-bottom: 1px solid #000; width: 250px; margin: 0 auto 5px;"></div>
-                                <p style="font-weight: bold; font-size: 0.8rem; color: #003d82;">ERIKA LLYSSA G. MAGPAYO</p>
-                                <p style="font-size: 0.55rem; line-height: 1.2;">Director IV for Administrative Service concurrent<br>Management Information Systems Service</p>
-                            </div>
-                        </div>
+                <div class="cal-body">
+                    <div class="cal-weekdays">
+                        <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
                     </div>
+                    <div class="cal-dates" id="calendar-dates-container"></div>
                 </div>
             </div>
 
-            <div id="cert-actions-container" class="mt-8 flex flex-col gap-4 items-center">
-                 </div>
-          </div>
+            <div class="cards-container">
+                <button class="nav-arrow left-arrow"><i class="fa-solid fa-angle-left"></i></button>
+                <button class="nav-arrow right-arrow"><i class="fa-solid fa-angle-right"></i></button>
+
+                <div class="travel-card card-active">
+                    <img src="poap.jpg" alt="The Role of Leadership in Shaping Culture">
+                    <div class="card-body">
+                        <h3>The Role of Leadership in Shaping Culture</h3>
+                        <a href="https://bit.ly/LNDRegistration2026" target="_blank" class="btn-read-more">Register Here <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="travel-card card-right">
+                    <img src="cpd.png" alt="Continuing Professional Development">
+                    <div class="card-body">
+                        <h3>Continuing Professional Development (CPD)</h3>
+                        <a href="https://bit.ly/LNDRegistration2026" target="_blank" class="btn-read-more">Register Here <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="travel-card card-far-right">
+                    <img src="podcast.png" alt="The Influence of Digitalization">
+                    <div class="card-body">
+                        <h3>The Influence of Digitalization on Psychological Well-Being</h3>
+                        <a href="https://hrdd-ldu.github.io/dotr_digital_wellness/" target="_blank" class="btn-read-more">Learn Here <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                
+                <div class="travel-card card-far-left">
+                    <img src="Streamlining.png" alt="Streamlining Transactions">
+                    <div class="card-body">
+                        <h3>Streamlining Transactions and Ease of Doing Business</h3>
+                        <a href="https://bit.ly/LNDRegistration2026" target="_blank" class="btn-read-more">Register Here <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="travel-card card-left">
+                    <img src="service.png" alt="Service Excellence">
+                    <div class="card-body">
+                        <h3>Service Excellence: A Guide to R.A. 11032 Citizen's Charter</h3>
+                        <a href="https://hrdd-ldu.github.io/dotr_citizen-s_charter/" target="_blank" class="btn-read-more">Learn Here <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
         </div>
-        
+    </section>
+
+    <div id="trainingModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeTrainingBtn">×</span>
+            <h2 class="modal-header-title">Training Schedule</h2>
+            <div id="modal-date-subtitle" class="modal-date-subtitle">Selected Date</div>
+            <div id="training-list-container">
+                </div>
+        </div>
     </div>
-  </div>
 
-  <div id="admin-page">
-      <div class="bg-[#003d82] text-white p-4 flex justify-between items-center sticky top-0 z-50">
-          <h2 class="text-xl font-bold">DOTr Admin Dashboard</h2>
-          <div>
-              <button onclick="exportToExcel()" class="bg-green-600 px-4 py-2 rounded mr-2 hover:bg-green-700 text-sm">Download Excel</button>
-              <button onclick="handleLogout()" class="bg-red-600 px-4 py-2 rounded hover:bg-red-700 text-sm">Log Out</button>
-          </div>
-      </div>
-      <div class="p-6">
-          <div class="bg-white rounded-lg shadow overflow-x-auto">
-              <table class="w-full text-left text-sm text-gray-700" id="admin-table">
-                  <thead class="bg-gray-100 uppercase font-bold text-xs">
-                      <tr>
-                          <th class="p-3">Name</th>
-                          <th class="p-3">Email</th>
-                          <th class="p-3">Pre-Test</th>
-                          <th class="p-3">Post-Test</th>
-                          <th class="p-3">Refl 1</th>
-                          <th class="p-3">Refl 2</th>
-                          <th class="p-3">Cert ID</th>
-                          <th class="p-3">Date Done</th>
-                          <th class="p-3">Action</th>
-                      </tr>
-                  </thead>
-                  <tbody class="divide-y" id="admin-tbody"></tbody>
-              </table>
-          </div>
-      </div>
-  </div>
-
-  <div class="chatbot-toggler" onclick="document.getElementById('chatbot-window').classList.toggle('show')"><i class="fas fa-comment-dots text-xl"></i></div>
-  <div class="chatbot-window" id="chatbot-window">
-    <div class="chat-header"><span>DOTr Assistant</span><span class="ml-auto cursor-pointer" onclick="document.getElementById('chatbot-window').classList.remove('show')">✖</span></div>
-    <div class="chat-body" id="chat-box">
-      <div class="chat-msg bot-msg">
-          <p class="mb-2">Hello! Narito ako upang tumulong. Pumili sa ibaba:</p>
-          <div class="chat-btn-grid">
-            <button class="chat-btn" onclick="sendQuery('login')">🔑 Login Help</button>
-            <button class="chat-btn" onclick="sendQuery('cert')">🏆 Signed Cert</button>
-            <button class="chat-btn" onclick="sendQuery('score')">📊 Passing Grade</button>
-            <button class="chat-btn" onclick="sendQuery('tech')">⚙️ Technical</button>
-            <button class="chat-btn" onclick="sendQuery('video')">📺 Video Issue</button>
-            <button class="chat-btn" onclick="sendQuery('about')">ℹ️ About Course</button>
-            <button class="chat-btn" onclick="sendQuery('privacy')">🔒 Data Privacy</button>
-            <button class="chat-btn" onclick="sendQuery('contact')">📞 Contact Us</button>
-          </div>
-      </div>
+    <footer id="contact-footer" style="position: relative; width: 100%; height: 400px; z-index: 10; overflow: hidden; background-color: #f4f4f4;">
+        <iframe id="google-map" src="https://maps.google.com/maps?q=Department+of+Transportation,+The+Columbia+Tower,+Ortigas+Avenue,+Mandaluyong+City&t=&z=16&ie=UTF8&iwloc=&output=embed" style="position: relative; z-index: 5; width: 100%; height: 100%; border: 0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <div style="position: absolute; right: 5%; top: 50%; transform: translateY(-50%); z-index: 10; background-color: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 380px; color: #333;">
+            <h3 style="margin-bottom: 15px; color: var(--primary-color); font-size: 1.2rem; font-weight: 700;">Department of Transportation</h3>
+            <p style="margin-bottom: 12px; font-size: 0.95rem; line-height: 1.5;"><i class="fa-solid fa-location-dot" style="color: var(--secondary-color); margin-right: 8px; width: 15px;"></i>The Columbia Tower, Ortigas Avenue, Barangay Wack-Wack, Mandaluyong City, NCR</p>
+            <p style="margin-bottom: 12px; font-size: 0.95rem;"><i class="fa-solid fa-phone" style="color: var(--secondary-color); margin-right: 8px; width: 15px;"></i>local 4401/4402</p>
+            <p style="margin-bottom: 0; font-size: 0.95rem;"><i class="fa-solid fa-envelope" style="color: var(--secondary-color); margin-right: 8px; width: 15px;"></i><a href="mailto:hrdd.ldu@dotr.gov.ph" style="color: #333; text-decoration: none;">hrdd.ldu@dotr.gov.ph</a></p>
+        </div>
+    </footer>
+    <div style="background-color: var(--primary-color); color: var(--text-light); text-align: center; padding: 15px 0; font-size: 0.9rem; position: relative; z-index: 10;">
+        © <span id="copyright-year">2026</span> Department of Transportation | HRDD - All Rights Reserved
     </div>
-  </div>
 
-  <div id="admin-modal" class="modal-overlay">
-    <div class="modal-box">
-      <h3 class="text-xl font-bold mb-4">Admin Access</h3>
-      <input type="password" id="admin-pass" placeholder="Password" class="w-full border p-2 rounded mb-4">
-      <div id="2fa-box" class="hidden"><input type="text" id="admin-2fa" placeholder="2FA Code" class="w-full border p-2 rounded mb-4 text-center"></div>
-      <button onclick="verifyAdmin()" class="btn w-full">Login</button>
-      <button onclick="document.getElementById('admin-modal').style.display='none'" class="mt-4 text-xs underline">Close</button>
-    </div>
-  </div>
+    <script>
+        // --- Video Audio Controls ---
+        const showcaseVideo = document.getElementById('showcase-video');
+        const muteToggleBtn = document.getElementById('mute-toggle-btn');
+        const muteIcon = muteToggleBtn.querySelector('i');
 
-  <canvas id="confetti-canvas" style="position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;"></canvas>
-
-  <script>
-    /* FIREBASE INIT */
-    const firebaseConfig = { apiKey: "AIzaSyC53_4NTHA-4-_zbhMq8ewZpXSjRRSR8t8", authDomain: "digital-dotr-training.firebaseapp.com", projectId: "digital-dotr-training", storageBucket: "digital-dotr-training.firebasestorage.app", messagingSenderId: "1041908407814", appId: "1:1041908407814:web:14b292604e8eb5320ded87", measurementId: "G-YJXM0XJH4J" };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    let currentUser = null; 
-    let unlockedTabs = ['intro'];
-    let allRecords = [];
-
-    /* QUESTIONS */
-    const mcq = [
-      { q: "1. Ano ang pangunahing paksa ng video podcast?", a: ["Kaalamang pinansyal", "Pag-unawa sa mental health at well-being sa digital age", "Gen Alpha", "Konserbasyon"], c: 1 },
-      { q: "2. Ibig sabihin ng 'Everything is accessible with just one click'?", a: ["Digital age convenience", "Libraries", "Stores", "Manual systems"], c: 0 },
-      { q: "3. Kapaki-pakinabang na ambag ng teknolohiya?", a: ["Stigma", "Online counseling access", "Wala", "Less research"], c: 1 },
-      { q: "4. Epekto ng blue light?", a: ["Pataas melatonin", "Gana kumain", "Bawas melatonin (puyat)", "Wala"], c: 2 },
-      { q: "5. Gamit sa exposure therapy?", a: ["Chatbot", "Virtual Reality (VR)", "SMS", "Email"], c: 1 },
-      { q: "6. Tawag sa patuloy na pag-scroll?", a: ["Deep reading", "Doom scrolling", "Mindful viewing", "Silent scrolling"], c: 1 },
-      { q: "7. HINDI hamon sa mental health?", a: ["Stigma", "Kakulangan ng professionals", "Sobra-sobrang psychologists", "Always-on culture"], c: 2 },
-      { q: "8. Positibong gawain sa trabaho?", a: ["Always-on", "Work-life balance policies", "Overtime", "24/7 chat"], c: 1 }
-    ];
-    const tf = [
-      { q: "9. Information overload leads to overthinking.", a: ["TAMA", "MALI"], c: 0 },
-      { q: "10. 'Me time' ay dapat hiwalay sa gawaing bahay.", a: ["TAMA", "MALI"], c: 0 },
-      { q: "11. Social comparison causes unrealistic expectations.", a: ["TAMA", "MALI"], c: 0 },
-      { q: "12. Biophilia Hypothesis: connection with nature.", a: ["TAMA", "MALI"], c: 0 },
-      { q: "13. Gadgets as reward affects reward systems.", a: ["TAMA", "MALI"], c: 0 },
-      { q: "14. Setting boundaries is BAD for mental health.", a: ["TAMA", "MALI"], c: 1 },
-      { q: "15. No one-size-fits-all approach.", a: ["TAMA", "MALI"], c: 0 }
-    ];
-
-    /* MATCHING DATA */
-    const matchPairs = [
-        { id: 1, term: "Blue Light", def: "Nakakaapekto sa pagtulog (Melatonin suppression)" },
-        { id: 2, term: "Doom Scrolling", def: "Pagbabasa ng negatibong balita nang tuloy-tuloy" },
-        { id: 3, term: "Digital Detox", def: "Pahinga sa gadgets para sa mental clarity" },
-        { id: 4, term: "FOMO", def: "Takot na mahuli sa balita o trends" }
-    ];
-
-    /* EVALUATION DATA */
-    const evalItems = [
-        "Ang mga layunin ng kurso ay malinaw na inilahad at madaling maunawaan.",
-        "Ang pagkakasunod-sunod ng mga paksa ay may magandang daloy.",
-        "Ang resource person ay nagpakita ng kasanayan sa paksa.",
-        "May pagsisikap na iugnay ang paksa sa tunay na buhay.",
-        "Nalaman ko ang iskedyul at layunin ng kurso.",
-        "Epektibo ang paghahatid ng kurso.",
-        "Ang mga materyales ay angkop sa layunin.",
-        "Ang mga gawain ay maayos at madaling sundan.",
-        "Ang nilalaman ay napapanahon at wasto.",
-        "Ibinigay ang mga kinakailangang materyales.",
-        "Ang setup ay komportable at walang abala.",
-        "Ang natutunan ay magagamit sa trabaho.",
-        "Natuto ako ng bagong kaalaman.",
-        "Ang natutunan ay makakatulong sa aking pag-unlad.",
-        "Naabot ng kurso ang aking inaasahan.",
-        "Irerekomenda ko ito sa aking katrabaho."
-    ];
-
-    /* INIT */
-    window.onload = function() {
-        renderQuiz('pretest-part1', mcq, false, 0);
-        renderQuiz('pretest-part2', tf, false, 8);
-        preparePostTest();
-        renderEval();
-        initMatchingGame();
-        
-        db.collection('users').onSnapshot((snapshot) => {
-            allRecords = [];
-            snapshot.forEach((doc) => allRecords.push({ id: doc.id, ...doc.data() }));
-            if(document.getElementById('admin-page').classList.contains('active')) renderAdminTable();
+        muteToggleBtn.addEventListener('click', () => {
+            if (showcaseVideo.muted) {
+                showcaseVideo.muted = false;
+                muteIcon.classList.remove('fa-volume-xmark');
+                muteIcon.classList.add('fa-volume-high');
+            } else {
+                showcaseVideo.muted = true;
+                muteIcon.classList.remove('fa-volume-high');
+                muteIcon.classList.add('fa-volume-xmark');
+            }
         });
-    };
 
-    /* AUTH */
-    async function handleLogin(e) {
-        e.preventDefault();
-        const email = document.getElementById('login-email').value.toLowerCase();
-        const btn = document.getElementById('login-submit-btn');
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
-        
-        const snap = await db.collection('users').where('user_email', '==', email).get();
-        if(!snap.empty) {
-            currentUser = { id: snap.docs[0].id, ...snap.docs[0].data() };
-            loginSuccess();
-        } else {
-            alert("Please Register first.");
-            document.getElementById('login-section').classList.add('hidden');
-            document.getElementById('attendance-section').classList.remove('hidden');
-            document.getElementById('attendance-section').classList.add('active');
-            document.getElementById('reg-email').value = email;
-        }
-        btn.innerHTML = 'Pumasok';
-    }
+        // --- Training Database ---
+        const trainingDatabase = [
+            {
+                title: "SERVICE EXCELLENCE: A GUIDE TO RA11032 CITIZEN'S CHARTER",
+                target: "All Offices/Services/Divisions",
+                dateRange: "AFPG: 02-13 March 2026 | Other O/S/Ds: 20-31 March 2026",
+                checkMatch: (y, m, d) => y === 2026 && m === 2 && ((d >= 2 && d <= 13) || (d >= 20 && d <= 31))
+            },
+            {
+                title: "FAST LEAD: Integrity Fast Lead: Integrity... A Choice? Upholding Public Service",
+                target: "All Current Leaders (SG18 and up) who lacks 40 hours supervisory/ managerial requirements. Maximum of 3 participants",
+                dateRange: "09 March 2026",
+                checkMatch: (y, m, d) => y === 2026 && m === 2 && d === 9
+            },
+            {
+                title: "THE INFLUENCE OF DIGITALIZATION ON PSYCHOLOGICAL WELL-BEING",
+                target: "All Employees",
+                dateRange: "13-27 March 2026",
+                checkMatch: (y, m, d) => y === 2026 && m === 2 && d >= 13 && d <= 27
+            },
+            {
+                title: "Continuing Professional Development (CPD) for Public Servants: Advancing Accountability, Competence, and Service Excellence",
+                target: "All DOTr Professionals RA 1080 (Board License) Organic Personnel. At least 50 participants",
+                dateRange: "March 2026",
+                checkMatch: (y, m, d) => y === 2026 && m === 2 
+            },
+            {
+                title: "Ease of Doing Business & Streamlining Transactions",
+                target: "All Offices/Services/Divisions (At least 60-70 participants)",
+                dateRange: "30-31 March 2026", 
+                checkMatch: (y, m, d) => y === 2026 && m === 2 && (d === 30 || d === 31)
+            },
+            {
+                title: "The Role of Leadership in Shaping Culture",
+                target: "All Current Leaders (SG22 and up) who lacks 40 hours supervisory/ managerial requirements. Maximum of 3 participants",
+                dateRange: "24-27 March 2026",
+                checkMatch: (y, m, d) => y === 2026 && m === 2 && d >= 24 && d <= 27
+            }
+        ];
 
-    async function handleAttendance(e) {
-        e.preventDefault();
-        const data = {
-            user_name: document.getElementById('reg-name').value.toUpperCase(),
-            user_email: document.getElementById('reg-email').value.toLowerCase(),
-            gender: document.getElementById('reg-gender').value,
-            employment: document.getElementById('reg-employment').value,
-            position: document.getElementById('reg-position').value,
-            office: document.getElementById('reg-office').value,
-            created_at: new Date().toISOString(),
-            progress: 'intro'
-        };
-        const ref = await db.collection('users').add(data);
-        currentUser = { id: ref.id, ...data };
-        loginSuccess();
-    }
+        // --- Dynamic Calendar System ---
+        const monthNames = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
+        let currentDateObj = new Date();
+        let navMonth = 2; // March (0-indexed) to showcase events
+        let navYear = 2026;
 
-    function loginSuccess() {
-        document.getElementById('login-section').classList.add('hidden');
-        document.getElementById('attendance-section').classList.add('hidden');
-        document.getElementById('main-nav').classList.remove('hidden');
-        document.getElementById('user-controls').classList.remove('hidden');
-        document.getElementById('display-name').textContent = currentUser.user_name;
-        
-        // Resume Progress & Show Badges
-        unlockTab('pretest');
-        if(currentUser.pretest_score) { unlockTab('module1'); document.getElementById('badge-pretest').innerHTML = '✅ Completed'; document.getElementById('badge-pretest').classList.remove('hidden'); }
-        if(currentUser.act1_done) { unlockTab('activity1'); document.getElementById('badge-act1').innerHTML = '✅ Passed'; document.getElementById('badge-act1').classList.remove('hidden'); }
-        if(currentUser.mod1_done) unlockTab('module2'); 
-        if(currentUser.act2_done) { unlockTab('posttest'); document.getElementById('badge-act2').innerHTML = '✅ Submitted'; document.getElementById('badge-act2').classList.remove('hidden'); }
-        if(currentUser.posttest_passed) { unlockTab('eval'); document.getElementById('badge-posttest').innerHTML = `⭐ Score: ${currentUser.posttest_score}`; document.getElementById('badge-posttest').classList.remove('hidden'); }
-        if(currentUser.eval_done) { 
-            unlockTab('cert'); 
-            generateCert(); 
-            updateCertUI();
-        }
-        
-        switchTab(currentUser.progress || 'intro');
-    }
+        document.getElementById('copyright-year').innerText = new Date().getFullYear();
 
-    /* NAVIGATION & VIDEO */
-    function unlockTab(id) { document.getElementById(`tab-${id}`).classList.remove('disabled'); unlockedTabs.push(id); }
-    function unlockAndSwitch(id) { unlockTab(id); switchTab(id); if(currentUser) db.collection('users').doc(currentUser.id).update({progress:id}); }
-    
-    function switchTab(id) {
-        if(!unlockedTabs.includes(id) && id!=='intro') return;
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-        document.getElementById(`tab-${id}`).classList.add('active');
-        
-        if(id === 'module1') startTimer(1, 'btn-to-act1', 1734); 
-        if(id === 'module2') startTimer(2, 'btn-to-act2', 1215);
-        if(id === 'cert' && currentUser) updateCertUI();
-    }
-
-    function startTimer(mod, btnId, dur) {
-        let p = 0; const fill = document.getElementById(`timer-fill-${mod}`); const btn = document.getElementById(btnId);
-        if(!btn.disabled) { fill.style.width="100%"; return; }
-        const int = setInterval(() => {
-            if(!document.hidden) p++;
-            fill.style.width = `${(p/dur)*100}%`;
-            if(p >= dur) { clearInterval(int); btn.disabled=false; btn.classList.remove('opacity-50','cursor-not-allowed'); }
-        }, 1000);
-    }
-
-    /* MATCHING GAME (REVISED) */
-    let matches = []; 
-    let selectedLeft = null;
-
-    function initMatchingGame() {
-        const colA = document.getElementById('match-col-a');
-        const colB = document.getElementById('match-col-b');
-        const terms = [...matchPairs].sort(()=>Math.random()-0.5);
-        const defs = [...matchPairs].sort(()=>Math.random()-0.5);
-        
-        colA.innerHTML = terms.map(i => `<div class="match-card" data-id="${i.id}" onclick="clickLeft(this)">${i.term}</div>`).join('');
-        colB.innerHTML = defs.map(i => `<div class="match-card" data-id="${i.id}" onclick="clickRight(this)">${i.def}</div>`).join('');
-    }
-
-    function clickLeft(el) {
-        if(el.classList.contains('matched')) return;
-        document.querySelectorAll('#match-col-a .match-card').forEach(c=>c.classList.remove('selected'));
-        el.classList.add('selected');
-        selectedLeft = el;
-    }
-
-    function clickRight(el) {
-        if(!selectedLeft || el.classList.contains('matched')) return;
-        selectedLeft.classList.remove('selected');
-        selectedLeft.classList.add('temp-matched');
-        el.classList.add('temp-matched');
-        matches.push({ left: selectedLeft.dataset.id, right: el.dataset.id, elLeft: selectedLeft, elRight: el });
-        selectedLeft = null;
-    }
-
-    function checkAllMatches() {
-        if(matches.length < 4) { alert("Please match all pairs first."); return; }
-        
-        let score = 0;
-        matches.forEach(m => { if(m.left === m.right) score++; });
-        
-        if(score >= 3) {
-            document.getElementById('match-feedback').innerText = `Success! Score: ${score}/4. Proceeding...`;
-            document.getElementById('ref1-form').classList.remove('hidden');
-             matches.forEach(m => { 
-                m.elLeft.classList.add('matched'); m.elRight.classList.add('matched');
-                m.elLeft.classList.remove('temp-matched'); m.elRight.classList.remove('temp-matched');
-            });
-        } else {
-            alert(`Score: ${score}/4. Failed. Please try again.`);
-            matches.forEach(m => {
-                 m.elLeft.classList.remove('temp-matched'); m.elRight.classList.remove('temp-matched');
-            });
-            matches = [];
-            document.getElementById('match-feedback').innerText = "";
-        }
-    }
-
-    /* ESSAY SCORING (AUTOMATED AI SIM) */
-    function calculateEssayScore(text, keywords) {
-        let score = 0;
-        if(text.length > 50) score += 5; 
-        if(text.length > 150) score += 3;
-        let hits = 0;
-        keywords.forEach(w => { if(text.toLowerCase().includes(w)) hits++; });
-        score += (hits * 2); 
-        return Math.min(score, 15);
-    }
-
-    async function submitReflection(num) {
-        const q1 = document.getElementById(`ref${num}-q1`).value;
-        const q2 = document.getElementById(`ref${num}-q2`).value;
-        const btn = event.target;
-        const fbBox = document.getElementById(`ref${num}-feedback`);
-        
-        if(q1.length < 20 || q2.length < 20) { alert("Please elaborate more."); return; }
-
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Scoring...';
-        
-        const key1 = ["notification", "schedule", "limit", "distraction", "focus", "work", "balance", "anxiety", "habit"];
-        const key2 = ["connection", "face", "presence", "empathy", "communication", "quality", "online", "relationship"];
-        
-        const s1 = calculateEssayScore(q1, key1);
-        const s2 = calculateEssayScore(q2, key2);
-        const total = s1 + s2;
-        
-        let feedback = "";
-        if(total >= 25) {
-             feedback = "Excellent! Insightful and detailed answers. (PASSED)";
-             fbBox.innerText = `Score: ${total}/30. ${feedback}`;
-             fbBox.className = "text-sm font-bold text-green-600 mt-2";
-             if(currentUser) await db.collection('users').doc(currentUser.id).update({ [`act${num}_done`]: true, [`ref${num}_score`]: total });
-             setTimeout(() => {
-                if(num === 1) unlockAndSwitch('module2');
-                if(num === 2) { preparePostTest(); unlockAndSwitch('posttest'); }
-             }, 1500);
-        } else {
-             feedback = "Did not meet passing score (25). Please elaborate more and use relevant keywords.";
-             fbBox.innerText = `Score: ${total}/30. ${feedback}`;
-             fbBox.className = "text-sm font-bold text-red-600 mt-2";
-             btn.innerHTML = "Try Again";
-        }
-    }
-
-    /* PLAN */
-    const planDetails = {
-        'Gradual': ['Magtakda ng daily app limit.', 'Iwasan ang phone sa unang 30 mins ng umaga.', 'I-track ang daily usage.', 'Magbura ng hindi mahalagang apps.', 'I-off ang notifications.', 'Gumamit ng grayscale mode.', 'Iwan ang phone sa labas ng kwarto.', 'Walang phone habang kumakain.', 'Maglaan ng 15 mins break bawat oras.', 'I-review ang stats linggo-linggo.'],
-        'Detox': ['Full weekend unplug.', 'Ipaalam sa pamilya na offline ka.', 'Gumamit ng analog alarm clock.', 'Magbasa ng libro.', 'Burahin ang social media pansamantala.', 'Walang screens pagkatapos ng 8PM.', 'Gumamit ng dumb phone mode.', 'Mag-nature walk.', 'Mag-journal.', 'Dahan-dahang bumalik online.'],
-        'Replacement': ['Maglista ng 10 hobbies.', 'Mag-10 pushups bago mag-scroll.', 'Magbasa ng 1 page kapag bored.', 'Tumawag sa kaibigan.', 'Mag-meditate.', 'Makinig ng audiobook.', 'Magmasid sa paligid.', 'Mag-drawing o magsulat.', 'Mag-stretch.', 'Mag-aral ng bagong skill.'],
-        'Mindful': ['Tanungin ang sarili bago i-unlock.', 'Huminga ng malalim bago mag-click.', 'Linisin ang home screen.', 'I-unfollow ang toxic accounts.', 'Ayusin ang news feed.', 'Iwasan ang multitasking.', 'Mag-logout parati.', 'I-type ang URL manual.', 'Gamitin ang browser intentionally.', 'Magpasalamat araw-araw.']
-    };
-
-    function selPlan(el, type) {
-        document.querySelectorAll('.intervention-card').forEach(c=>c.classList.remove('selected'));
-        el.classList.add('selected');
-        document.getElementById('plan-name').innerText = type;
-        const list = document.getElementById('plan-list');
-        list.innerHTML = planDetails[type].map(i => `<li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-2"></i>${i}</li>`).join('');
-        document.getElementById('step-select').classList.add('hidden');
-        document.getElementById('step-result').classList.remove('hidden');
-        document.getElementById('ref2-form').classList.remove('hidden');
-    }
-    
-    function calcTotal() {
-        const ids = ['st-social','st-work','st-game','st-stream']; 
-        let t = 0; ids.forEach(id => t += parseFloat(document.getElementById(id).value)||0);
-        document.getElementById('st-total').innerText = t;
-    }
-
-    /* QUIZ */
-    function renderQuiz(id, items, showRes, startIdx) {
-        document.getElementById(id).innerHTML = items.map((i, idx) => `
-            <div class="bg-white p-4 rounded border ${showRes ? (i.c===i.sel?'border-green-500 bg-green-50':'border-red-500 bg-red-50'):''}">
-                <p class="font-bold mb-2">${idx+1+startIdx}. ${i.q}</p>
-                <div class="space-y-2">${i.a.map((o,ox)=>`<label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="${id}-${idx}" value="${ox}" ${showRes?'disabled':''} ${i.sel===ox?'checked':''}>${o}</label>`).join('')}</div>
-            </div>`).join('');
-    }
-
-    async function submitPreTest() {
-        let score = 0;
-        // Simple count for pre-test (optional storage)
-        mcq.forEach((i,x) => { const el = document.querySelector(`input[name="pretest-part1-${x}"]:checked`); if(el && parseInt(el.value)===i.c) score++; });
-        tf.forEach((i,x) => { const el = document.querySelector(`input[name="pretest-part2-${x}"]:checked`); if(el && parseInt(el.value)===i.c) score++; });
-        
-        alert(`Pre-Test Submitted. Score: ${score}/15`);
-        if(currentUser) await db.collection('users').doc(currentUser.id).update({ pretest_score: score });
-        unlockAndSwitch('module1');
-    }
-
-    let shuffledMcq = [], shuffledTf = [];
-    function preparePostTest() {
-        shuffledMcq = [...mcq].sort(()=>Math.random()-0.5);
-        shuffledTf = [...tf].sort(()=>Math.random()-0.5);
-        renderQuiz('posttest-part1', shuffledMcq, false, 0);
-        renderQuiz('posttest-part2', shuffledTf, false, 8);
-    }
-
-    async function submitPostTest() {
-        let s = 0;
-        shuffledMcq.forEach((i,x) => { const el = document.querySelector(`input[name="posttest-part1-${x}"]:checked`); if(el) { i.sel = parseInt(el.value); if(i.sel===i.c) s++; } });
-        shuffledTf.forEach((i,x) => { const el = document.querySelector(`input[name="posttest-part2-${x}"]:checked`); if(el) { i.sel = parseInt(el.value); if(i.sel===i.c) s++; } });
-
-        if(s >= 14) {
-            alert(`Passed! Score: ${s}/15`);
-            renderQuiz('posttest-part1', shuffledMcq, true, 0);
-            renderQuiz('posttest-part2', shuffledTf, true, 8);
-            if(currentUser) await db.collection('users').doc(currentUser.id).update({ posttest_score: s, posttest_passed: true });
-            unlockAndSwitch('eval');
-        } else {
-            alert(`Failed. Score: ${s}/15. Try again.`);
-            preparePostTest();
-        }
-    }
-
-    function renderEval() {
-        document.getElementById('rating-container').innerHTML = evalItems.map((q,i) => `
-            <div><p class="font-medium mb-2">${q}</p><div class="flex justify-between md:justify-start md:gap-8">${[1,2,3,4,5].map(n=>`<label class="flex flex-col items-center"><input type="radio" name="e${i}" value="${n}" required><span class="text-sm">${n}</span></label>`).join('')}</div></div>
-        `).join('');
-    }
-
-    async function submitEvaluation(e) {
-        e.preventDefault();
-        
-        // Generate Cert ID and Date
-        const snap = await db.collection('users').where('eval_done', '==', true).get();
-        const count = snap.size + 1;
-        const certId = `HRDD-LDU-CERT2026-${count.toString().padStart(7, '0')}`;
-        const date = new Date().toLocaleDateString();
-
-        if(currentUser) {
-            await db.collection('users').doc(currentUser.id).update({ 
-                eval_done: true,
-                cert_id: certId,
-                completion_date: date
-            });
-            currentUser.cert_id = certId;
-            currentUser.completion_date = date;
-            currentUser.eval_done = true;
-        }
-        
-        generateCert();
-        updateCertUI();
-        unlockAndSwitch('cert'); 
-        
-        const c = new ConfettiGenerator({target: 'confetti-canvas'}); c.render();
-        window.scrollTo(0,0);
-    }
-
-    /* CERTIFICATE LOGIC */
-    function generateCert() {
-        const name = currentUser ? currentUser.user_name : "JUAN DELA CRUZ";
-        const gender = currentUser ? currentUser.gender : "Male";
-        const pronoun = (gender === "Male") ? "his" : (gender === "Female") ? "her" : "their";
-        const date = currentUser.completion_date || new Date().toLocaleDateString();
-        const id = currentUser.cert_id || "PENDING";
-
-        document.getElementById('cert-name').innerText = name;
-        document.getElementById('cert-gender').innerText = pronoun;
-        document.getElementById('cert-date').innerText = date;
-        document.getElementById('cert-id').innerText = `ID: ${id}`;
-        
-        var qr = new QRious({
-          element: document.getElementById('qrcode-canvas'),
-          value: `Name: ${name} | ID: ${id} | Course: Digital Well-being | Date: ${date}`,
-          size: 80
-        });
-    }
-
-    function updateCertUI() {
-        const header = document.getElementById('cert-header-container');
-        const actions = document.getElementById('cert-actions-container');
-
-        if (currentUser && currentUser.signed_cert_url) {
-            header.innerHTML = `
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
-                    <strong class="font-bold">✅ Good news!</strong>
-                    <span class="block sm:inline">Your signed certificate is ready to download.</span>
-                </div>`;
+        function renderDynamicCalendar() {
+            const today = currentDateObj.getDate();
+            const thisMonth = currentDateObj.getMonth();
+            const thisYear = currentDateObj.getFullYear();
             
-            actions.innerHTML = `
-                 <a href="${currentUser.signed_cert_url}" target="_blank" class="bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 font-bold shadow-lg transition w-full md:w-auto text-center">
-                    <i class="fas fa-file-signature mr-2"></i> Download Signed Copy
-                </a>`;
-        } else {
-            header.innerHTML = `
-                <h3 class="font-bold text-[#003d82] text-lg mb-2">📢 Sertipikasyon:</h3>
-                <ol class="list-decimal pl-5 space-y-2 text-sm text-gray-700">
-                    <li>I-verify ang iyong pangalan sa sertipiko.</li>
-                    <li>Gamitin ang <strong>"Print / Save as PDF"</strong> button sa ibaba para i-save ang iyong kopya.</li>
-                    <li>Para sa <strong>Signed Copy</strong>, i-upload ang PDF sa link sa ibaba at balikan ito mamaya.</li>
-                </ol>`;
+            document.getElementById('calendar-month-year').innerText = `${monthNames[navMonth]} ${navYear}`;
 
-            actions.innerHTML = `
-                <button class="btn w-full md:w-auto" onclick="printCert()"><i class="fas fa-print mr-2"></i> Print / Save as PDF</button>
-                <div class="flex flex-wrap justify-center gap-4 w-full">
-                    <a href="https://dotrgovph-my.sharepoint.com/:f:/g/personal/hrdd_ldu_dotr_gov_ph/IgDAkkEMIxMNS7eOBZlWTGswARXRGedHu07Gr99sacmFiAU?e=rM9phP" target="_blank" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center gap-2 text-sm font-bold">
-                        <i class="fas fa-upload"></i> Upload for e-Signature
-                    </a>
-                    <a href="https://dotrgovph-my.sharepoint.com/:f:/g/personal/hrdd_ldu_dotr_gov_ph/IgDAkkEMIxMNS7eOBZlWTGswARXRGedHu07Gr99sacmFiAU?e=rM9phP" target="_blank" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center gap-2 text-sm font-bold">
-                        <i class="fas fa-folder-open"></i> Check Signed Copy
-                    </a>
-                </div>`;
+            const firstDayIndex = new Date(navYear, navMonth, 1).getDay();
+            const daysInMonth = new Date(navYear, navMonth + 1, 0).getDate();
+
+            const datesContainer = document.getElementById('calendar-dates-container');
+            datesContainer.innerHTML = ''; 
+
+            for (let i = 0; i < firstDayIndex; i++) {
+                const emptySlot = document.createElement('div');
+                emptySlot.className = 'empty-slot';
+                datesContainer.appendChild(emptySlot);
+            }
+
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dateWrapper = document.createElement('div');
+                dateWrapper.className = 'cal-date-container';
+
+                const dateSpan = document.createElement('span');
+                dateSpan.className = 'cal-date';
+                dateSpan.innerText = i;
+                dateWrapper.appendChild(dateSpan);
+
+                if (i === today && navMonth === thisMonth && navYear === thisYear) {
+                    dateWrapper.classList.add('today');
+                }
+
+                const hasEvents = trainingDatabase.some(event => event.checkMatch(navYear, navMonth, i));
+                
+                if(hasEvents) {
+                    const dot = document.createElement('div');
+                    dot.className = 'event-dot';
+                    dateWrapper.appendChild(dot);
+                }
+
+                dateWrapper.addEventListener('click', function() {
+                    openTrainingModal(navYear, navMonth, i);
+                });
+
+                datesContainer.appendChild(dateWrapper);
+            }
         }
-    }
 
-    function printCert() {
-        window.print();
-    }
-
-    function handleLogout() { location.reload(); }
-
-    /* CHATBOT */
-    function sendQuery(t) {
-        const box = document.getElementById('chat-box');
-        let a = "";
-        
-        if(t==='cert') {
-            a = "<p><strong>Paano makuha ang Signed Copy:</strong></p><p>1. Tapusin ang lahat ng modules at evaluation. <br>2. I-download ang unsigned PDF certificate sa Certificate Tab. <br>3. I-click ang 'Upload for e-Signature' button at i-upload ang iyong PDF. <br>4. Balikan ang Certificate Tab pagkalipas ng 3-5 araw. Kung napirmahan na ito ng Admin, makikita mo ang 'Download Signed Copy' button na kulay berde.</p>";
-        } else if(t==='login') {
-            a = "<p><strong>Login Process:</strong></p><p>Sa Login screen, ilagay lamang ang iyong registered email address. Ang system ay kusang magbubukas ng iyong huling natapos na gawain.</p><p>Kung ito ang iyong unang beses, dadalhin ka ng system sa Attendance Form. Siguraduhing tama ang spelling ng iyong pangalan dahil ito ang gagamitin sa iyong sertipiko.</p>";
-        } else if(t==='score') {
-            a = "<p><strong>Passing Requirements:</strong></p><p>Sa Activity 1 (Matching), kailangan mo ng score na 3/4. Sa Reflections, kailangan ang detalyadong sagot para makapasa (25 pts).</p><p>Sa Post-Test, kailangan mo ng 90% (14/15) score. Kung mababa rito, kailangan mong ulitin ang test hanggang sa makuha ang passing grade.</p>";
-        } else if(t==='video') {
-            a = "<p><strong>Video Instructions:</strong></p><p>Ang bawat video module ay may nakatakdang minimum watch time (85%). Hindi mo maaaring i-skip o i-fast forward ang video.</p><p>Ang 'Next' button ay magiging clickable lamang kapag natapos na ang required time. Kung nagkaroon ng error, i-refresh ang page; naka-save ang iyong progress.</p>";
-        } else if(t==='tech') {
-            a = "<p><strong>Technical Issues:</strong></p><p>Kung hindi naglo-load ang video, subukang i-refresh ang browser o gumamit ng ibang network. Siguraduhing naka-enable ang JavaScript.</p><p>Kung may problema sa pag-save, siguraduhing stable ang internet connection. Ang system ay auto-save sa bawat step.</p>";
-        } else if(t==='about') {
-            a = "<p><strong>About the Course:</strong></p><p>Ang Digitalization and Psychological Well-Being ay isang self-paced course na layuning turuan ang mga empleyado ng DOTr tungkol sa epekto ng teknolohiya sa mental health.</p><p>Tatalakayin dito ang screen time management, digital detox, at work-life balance sa digital age.</p>";
-        } else if(t==='privacy') {
-            a = "<p><strong>Data Privacy:</strong></p><p>Ang lahat ng impormasyong ibinigay sa Attendance Form at mga sagot sa Reflection ay protektado at gagamitin lamang para sa training purposes at certification.</p><p>Hindi ibabahagi ang iyong personal na data sa labas ng HRDD.</p>";
-        } else if(t==='contact') {
-            a = "<p><strong>Contact Us:</strong></p><p>Para sa iba pang katanungan o concern, maaaring mag-email sa hrddldu@dotr.gov.ph.</p><p>Maaari ring tumawag sa HRDD local line tuwing office hours.</p>";
-        }
-        
-        box.innerHTML += `<div class="chat-msg user-msg text-right">Help</div>`;
-        setTimeout(() => {
-            box.insertAdjacentHTML('beforeend', `<div class="chat-msg bot-msg text-left">${a}</div>`);
-            box.scrollTop = box.scrollHeight;
-        }, 500);
-    }
-
-    /* ADMIN */
-    function showAdminLogin() { document.getElementById('admin-modal').style.display = 'flex'; }
-    function verifyAdmin() {
-        const p = document.getElementById('admin-pass').value;
-        const c = document.getElementById('admin-2fa').value;
-        const box = document.getElementById('2fa-box');
-        
-        if(p === 'hrdd2O26' && box.classList.contains('hidden')) { box.classList.remove('hidden'); return; }
-        if(c === '267588') {
-            document.getElementById('admin-modal').style.display = 'none';
-            document.getElementById('admin-page').classList.add('active');
-            renderAdminTable();
-        } else { alert("Invalid"); }
-    }
-
-    function renderAdminTable() {
-        const tbody = document.getElementById('admin-tbody');
-        tbody.innerHTML = allRecords.map(u => {
-            const preColor = (u.pretest_score >= 10) ? 'text-green-600' : 'text-red-600';
-            const postColor = (u.posttest_score >= 14) ? 'text-green-600' : 'text-red-600';
-            
-            return `
-            <tr class="border-b bg-white hover:bg-gray-50 text-xs">
-                <td class="p-3 font-bold">${u.user_name}</td>
-                <td class="p-3 text-xs">${u.user_email}</td>
-                <td class="p-3 text-xs">${u.office || '-'}</td>
-                <td class="p-3">${u.gender || '-'}</td>
-                <td class="p-3 text-center font-mono font-bold ${preColor}">${u.pretest_score || '-'}</td>
-                <td class="p-3 text-center font-mono font-bold ${postColor}">${u.posttest_score || '-'}</td>
-                <td class="p-3">${u.ref1_score || '-'}</td>
-                <td class="p-3">${u.ref2_score || '-'}</td>
-                <td class="p-3 text-xs">${u.eval_done ? '✅ Done' : '⏳ Pending'}</td>
-                <td class="p-3">${u.completion_date || '-'}</td>
-                <td class="p-3 text-xs font-mono">${u.cert_id || 'PENDING'}</td>
-                <td class="p-3 text-center flex gap-1 justify-center">
-                    ${u.signed_cert_url 
-                        ? `<a href="${u.signed_cert_url}" target="_blank" class="text-green-600 font-bold hover:underline">Link ✅</a>`
-                        : `<button class="bg-blue-100 text-blue-700 px-2 py-1 rounded hover:bg-blue-200" onclick="uploadSignedLink('${u.id}')">🔗</button>`
-                    }
-                    <button class="bg-gray-200 px-2 py-1 rounded hover:bg-gray-300" onclick="adminPrintCert('${u.user_name}', '${u.gender}', '${u.completion_date}', '${u.cert_id}')">🖨️</button>
-                </td>
-            </tr>
-            `;
-        }).join('');
-    }
-    
-    function adminPrintCert(name, gender, date, id) {
-        const originalUser = currentUser;
-        currentUser = { user_name: name, gender: gender, completion_date: date, cert_id: id };
-        generateCert();
-        printCert();
-        currentUser = originalUser; 
-        if(currentUser) generateCert(); 
-    }
-
-    async function uploadSignedLink(id) {
-        const url = prompt("Enter the SharePoint/Drive link for the signed certificate:");
-        if (url) {
-            await db.collection('users').doc(id).update({ signed_cert_url: url });
-            alert("Link saved! Trainee will now see the download button.");
-        }
-    }
-
-    function exportToExcel() {
-        let csvContent = "data:text/csv;charset=utf-8,";
-        csvContent += "Name,Email,Office,Gender,PreTest,PostTest,Refl1,Refl2,CertID,DateDone,SignedURL\n";
-        allRecords.forEach(u => {
-            const row = [
-                `"${u.user_name || ''}"`, `"${u.user_email || ''}"`, `"${u.office || ''}"`,
-                `"${u.gender || ''}"`, u.pretest_score || 0, u.posttest_score || 0,
-                u.ref1_score || 0, u.ref2_score || 0, u.cert_id || '', u.completion_date || '', u.signed_cert_url || ''
-            ].join(",");
-            csvContent += row + "\n";
+        document.getElementById('prev-month-btn').addEventListener('click', () => {
+            navMonth--;
+            if (navMonth < 0) { navMonth = 11; navYear--; }
+            renderDynamicCalendar();
         });
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "training_data.csv");
-        document.body.appendChild(link);
-        link.click();
-    }
-  </script>
- </body>
+
+        document.getElementById('next-month-btn').addEventListener('click', () => {
+            navMonth++;
+            if (navMonth > 11) { navMonth = 0; navYear++; }
+            renderDynamicCalendar();
+        });
+
+        renderDynamicCalendar();
+
+        // --- Training Modal Logic ---
+        const trainingModal = document.getElementById('trainingModal');
+        const closeTrainingBtn = document.getElementById('closeTrainingBtn');
+        const trainingListContainer = document.getElementById('training-list-container');
+        const modalDateSubtitle = document.getElementById('modal-date-subtitle');
+
+        function openTrainingModal(year, month, day) {
+            const matchedEvents = trainingDatabase.filter(event => event.checkMatch(year, month, day));
+            modalDateSubtitle.innerText = `Scheduled for: ${monthNames[month]} ${day}, ${year}`;
+            trainingListContainer.innerHTML = '';
+
+            if (matchedEvents.length === 0) {
+                trainingListContainer.innerHTML = '<div class="no-event-msg">No scheduled training programs for this date.</div>';
+            } else {
+                matchedEvents.forEach(event => {
+                    const itemHTML = `
+                        <div class="training-item">
+                            <h4>${event.title}</h4>
+                            <p><strong>Target Participants:</strong> ${event.target}</p>
+                            <p><strong>Schedule:</strong> ${event.dateRange}</p>
+                        </div>
+                    `;
+                    trainingListContainer.insertAdjacentHTML('beforeend', itemHTML);
+                });
+            }
+            trainingModal.classList.add('show');
+        }
+
+        closeTrainingBtn.addEventListener('click', () => trainingModal.classList.remove('show'));
+        
+        window.addEventListener('click', (e) => {
+            if (e.target === trainingModal) {
+                trainingModal.classList.remove('show');
+            }
+        });
+
+
+        // --- Background Video Logic ---
+        const dotVideos = [
+            'https://videos.pexels.com/video-files/7252274/7252274-uhd_2560_1440_25fps.mp4',
+            'https://videos.pexels.com/video-files/29337317/12645572_2560_1440_120fps.mp4',
+            'https://videos.pexels.com/video-files/3273637/3273637-hd_1920_1080_30fps.mp4',
+            'https://videos.pexels.com/video-files/4427698/4427698-hd_1080_1920_30fps.mp4',
+            'https://videos.pexels.com/video-files/36066940/15295954_1920_1080_24fps.mp4',
+        ];
+
+        let currentVideoIndex = 0;
+        const bgVideo = document.getElementById('bgVideo');
+
+        function loadVideo(index) {
+            const videoSource = bgVideo.querySelector('source');
+            const currentSrc = dotVideos[index];
+            videoSource.src = currentSrc;
+            bgVideo.load();
+            
+            // Adjust playback speed for specific videos
+            if (currentSrc.includes('3273637') || currentSrc.includes('4427698')) {
+                bgVideo.playbackRate = 0.5; // Slow down to half speed
+            } else {
+                bgVideo.playbackRate = 1.0; // Normal speed
+            }
+            
+            bgVideo.play().catch(err => console.log("Video play error:", err));
+        }
+
+        function rotateVideo() {
+            bgVideo.classList.add('fade-out');
+            setTimeout(() => {
+                currentVideoIndex = (currentVideoIndex + 1) % dotVideos.length;
+                loadVideo(currentVideoIndex);
+                bgVideo.classList.remove('fade-out');
+            }, 500);
+        }
+
+        loadVideo(0);
+        setInterval(rotateVideo, 10000);
+
+
+        // --- 5-Card Carousel Logic ---
+        const cardElements = Array.from(document.querySelectorAll('.travel-card'));
+        const leftBtn = document.querySelector('.left-arrow');
+        const rightBtn = document.querySelector('.right-arrow');
+        let activeIndex = cardElements.findIndex(c => c.classList.contains('card-active'));
+        if (activeIndex === -1) activeIndex = 0;
+
+        function applyClasses(index) {
+            const n = cardElements.length; 
+            const leftIndex = (index - 1 + n) % n;
+            const farLeftIndex = (index - 2 + n) % n;
+            const rightIndex = (index + 1) % n;
+            const farRightIndex = (index + 2) % n;
+
+            // Remove all layout classes
+            cardElements.forEach((card) => card.classList.remove('card-far-left', 'card-left', 'card-active', 'card-right', 'card-far-right'));
+
+            // Assign the 5 symmetrical positions
+            cardElements[farLeftIndex].classList.add('card-far-left');
+            cardElements[leftIndex].classList.add('card-left');
+            cardElements[index].classList.add('card-active');
+            cardElements[rightIndex].classList.add('card-right');
+            cardElements[farRightIndex].classList.add('card-far-right');
+        }
+
+        function nextCard() { activeIndex = (activeIndex + 1) % cardElements.length; applyClasses(activeIndex); }
+        function prevCard() { activeIndex = (activeIndex - 1 + cardElements.length) % cardElements.length; applyClasses(activeIndex); }
+
+        rightBtn.addEventListener('click', nextCard);
+        leftBtn.addEventListener('click', prevCard);
+
+        let carouselInterval = setInterval(nextCard, 4000);
+        const cardsContainer = document.querySelector('.cards-container');
+        cardsContainer.addEventListener('mouseenter', () => clearInterval(carouselInterval));
+        cardsContainer.addEventListener('mouseleave', () => { carouselInterval = setInterval(nextCard, 4000); });
+
+        applyClasses(activeIndex);
+    </script>
+</body>
 </html>
