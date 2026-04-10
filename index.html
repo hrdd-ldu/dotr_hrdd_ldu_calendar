@@ -166,7 +166,7 @@
         }
 
         .hero-content h1 {
-            font-size: clamp(3rem, 6vw, 5rem); /* Increased font size here */
+            font-size: clamp(3rem, 6vw, 5rem); 
             line-height: 1.15;
             font-weight: 800;
             margin-bottom: 10px;
@@ -209,8 +209,8 @@
         }
 
         .gear-up-content p {
-            font-family: 'Allura', cursive; /* Applied the new font */
-            font-size: clamp(1.8rem, 3vw, 2.5rem); /* Scaled properly for Allura's natural size */
+            font-family: 'Allura', cursive; 
+            font-size: clamp(1.8rem, 3vw, 2.5rem); 
             font-weight: 400; 
             line-height: 1.2;
             color: var(--primary-color);
@@ -1023,7 +1023,7 @@
             <h2 class="modal-header-title">Training Schedule</h2>
             <div id="modal-date-subtitle" class="modal-date-subtitle">Selected Date</div>
             <div id="training-list-container">
-                </div>
+            </div>
         </div>
     </div>
 
@@ -1061,47 +1061,110 @@
         // --- Training Database ---
         const trainingDatabase = [
             {
-                title: "SERVICE EXCELLENCE: A GUIDE TO RA11032 CITIZEN'S CHARTER",
-                target: "All Offices/Services/Divisions",
-                dateRange: "AFPG: 02-13 March 2026 | Other O/S/Ds: 20-31 March 2026",
-                checkMatch: (y, m, d) => y === 2026 && m === 2 && ((d >= 2 && d <= 13) || (d >= 20 && d <= 31))
-            },
-            {
-                title: "FAST LEAD: Integrity Fast Lead: Integrity... A Choice? Upholding Public Service",
-                target: "All Current Leaders (SG18 and up) who lacks 40 hours supervisory/ managerial requirements. Maximum of 3 participants",
-                dateRange: "09 March 2026",
-                checkMatch: (y, m, d) => y === 2026 && m === 2 && d === 9
-            },
-            {
-                title: "THE INFLUENCE OF DIGITALIZATION ON PSYCHOLOGICAL WELL-BEING",
+                title: "SAFETY FIRST: BUILDING A RESILIENT AND PREPARED WORKFORCE",
+                competencies: "Core Competency (Teamwork)",
                 target: "All Employees",
-                dateRange: "13-27 March 2026",
-                checkMatch: (y, m, d) => y === 2026 && m === 2 && d >= 13 && d <= 27
+                dateRange: "April 30, 2026",
+                duration: "1 Day",
+                deadline: "21 Apr 2026",
+                mode: "Online via MS Teams",
+                objectives: "Recogrens workplace hanwits and p Apply safety pimonds and Damasta per Communicate effung вирост provement thoughing and suggesting prov",
+                checkMatch: (y, m, d) => y === 2026 && m === 3 && d === 30
             },
             {
-                title: "Continuing Professional Development (CPD) for Public Servants: Advancing Accountability, Competence, and Service Excellence",
-                target: "All DOTr Professionals RA 1080 (Board License) Organic Personnel. At least 50 participants",
-                dateRange: "March 2026",
-                checkMatch: (y, m, d) => y === 2026 && m === 2 
+                title: "CHANGE MANAGEMENT",
+                competencies: "Leadning Change. Advance and Superior",
+                target: "All Current Leaders (SG22 and up) who lacks 40 hours supervisory/managerial requirements. Maximum of 3 participants",
+                dateRange: "May 05-08, 2026 (Out-of-House)",
+                duration: "4 days",
+                deadline: "April 28, 2026",
+                mode: "Face-to-Face",
+                objectives: "Change Management training equips participants with the knowledge tools and and techniques to effectively lead manage, and adapt to organizational change. It focuses on understanding the human side of change, building resilience and fostering a culture that embraces transformation. Through interactive discussions, case studies, and practical exercises participants will team how to anticipate challenges, minimize resistance, and drive successful outcomes in dynamic environments. Objectives: 1. Define change management and its importance in organizational success. 2. Identify roles and responsibilities in managing change 3. Diagnose sources of resistance and apply strategies to overcome them. 4. Ensure long-tent adoption and continuous improvement",
+                checkMatch: (y, m, d) => y === 2026 && m === 4 && d >= 5 && d <= 8
             },
             {
-                title: "Ease of Doing Business & Streamlining Transactions",
-                target: "All Offices/Services/Divisions (At least 60-70 participants)",
-                dateRange: "30-31 March 2026", 
-                checkMatch: (y, m, d) => y === 2026 && m === 2 && (d === 30 || d === 31)
+                title: "PROJECT MANAGEMENT TRAINING",
+                competencies: "Project Management",
+                target: "All Offices/Services/Division. At least 50-70 participants",
+                dateRange: "May 25-28, 2026",
+                duration: "4 days",
+                deadline: "May 15 2026",
+                mode: "Online/Face-to-face",
+                objectives: "The Project Management Training is with the asse από andr program covers the fact manageme. The trainingsute for professionals acro Understand core proper manage posant and fun in prrect managem amemode and metho Manitor and contre performance by ang kapertama and reporting t ack progress and project su sstaly by contacting proyectators tocuments and hand",
+                checkMatch: (y, m, d) => y === 2026 && m === 4 && d >= 25 && d <= 28
             },
             {
-                title: "The Role of Leadership in Shaping Culture",
-                target: "All Current Leaders (SG22 and up) who lacks 40 hours supervisory/ managerial requirements. Maximum of 3 participants",
-                dateRange: "24-27 March 2026",
-                checkMatch: (y, m, d) => y === 2026 && m === 2 && d >= 24 && d <= 27
+                title: "PUBLIC SPEAKING AND VISUAL COMMUNICATION TRAINING",
+                competencies: "Presentation Skills",
+                target: "All Offices/Services/Division. At least 60-70 participants",
+                dateRange: "June 03-04 2026",
+                duration: "2 days",
+                deadline: "May 26, 2026",
+                mode: "Face-to-Face",
+                objectives: "This 2-day training program equips participares with essential skills for effective public speaking and communication. It addresses common speaking tears, guides attendees attendees in organizing impactfil vimal.com thoughts clearly, and facilitates the delivery of engaging presentations that connect with audiences. Participants will leam practical techniques to enhance their voice, body language, and ovmall confidence. The program also covers creating compeiling visual aide that make messages stand out. Understand the basics of effective public spessung and overcome common fears Organize and deliver cinar, engaging presentations that connect with the authence Use simple techniques to improve voice, body language and confidence weste speaking Create soul aids that support and enhance their message, making presentations more impactful Practice presenting with feedback to improve their skills in a supportive environment. Apply these skills to everyday work situations, meetings, and harmal presentations",
+                checkMatch: (y, m, d) => y === 2026 && m === 5 && (d === 3 || d === 4)
+            },
+            {
+                title: "DIGITAL TRANSFORMATION LEADERSHIP",
+                competencies: "Leadning Change. Advance and Superior",
+                target: "All Emerging and Current Leaders (SG15 and up) who lacks 40 hours supervisory/managerial requirements. Maximum of 60-70 participants",
+                dateRange: "June 09-10 2026",
+                duration: "2 days",
+                deadline: "June 03. 2026",
+                mode: "Online via MS teams",
+                objectives: "In fast-changing digital landscape, organizations need leaders who can dive innovation adapt to disruption, and inspire teams through transformation. This Training today's equiția leaders and emerging leaders with the vision skills and strategies to lead successful digital initiatives. 1. Craft a compelling digital transformation vision 2. Lead with confidence in times of disnption 3. Translate digital strategies into measurable organizational outcomes mes of disruption 4. Inspire teams to embrace innovation and continuous improvement",
+                checkMatch: (y, m, d) => y === 2026 && m === 5 && (d === 9 || d === 10)
+            },
+            {
+                title: "NEW GOVERNMENT PROCUREMENT ACT RA 12009",
+                competencies: "Procurement Proficiency",
+                target: "BAC Members, TWG Members, Procurement Management Service, End-users Representative (200-250 participants)",
+                dateRange: "June 23-25 2026",
+                duration: "3 days",
+                deadline: "June 4, 2028",
+                mode: "Online/Face-to-Face",
+                objectives: "This capacity development initiative arms to equip Bids and Awards Committee (BAC) Members BAC Secretariat Members, and Technical Working Groups (TWGs) of all government instrumentalities with the critical and essential knowledge, practical skills and readiness to implement the key reforms introduced under the NGPA",
+                checkMatch: (y, m, d) => y === 2026 && m === 5 && d >= 23 && d <= 25
+            },
+            {
+                title: "CONTINUING PROFESSIONAL DEVELOPMENT (CPD) FOR PUBLIC SERVANTS: Advancing Accountability, Competence, and Service Excellence",
+                competencies: "All Technical/Functional Competericies related",
+                target: "All DOT Professionals RA 1080 (Board License) Cen Personnel. Al least 50 participants",
+                dateRange: "April to June 2026",
+                duration: "Depending on the selected program",
+                deadline: "24 April 2020",
+                mode: "Online Onsite",
+                objectives: "This Continuing Professional Development (CPD) program aims to enhance the competencies. ethical accountability, and service ortentation of public servants. The course is designed to strengthen their commitment to public trust, equip them with relevant knowledge and skills, and promole a culture of integrity and excellence in government service",
+                checkMatch: (y, m, d) => y === 2026 && (m >= 3 && m <= 5)
+            },
+            {
+                title: "ORGANIZATION WIDE COMPETENCY FRAMEWORK REVIEW AND ASSESSMENT",
+                competencies: "Organizational Development",
+                target: "All Offices/Services/Division. At least 60-70 participants per Session",
+                dateRange: "April to June 2020",
+                duration: "N/A",
+                deadline: "N/A",
+                mode: "Face-to-Face",
+                objectives: "The Organization-Wide Competency Framework Review and Assessment aims to provide participants with a comprehensive understanding of the organization's competency framework. and its role in supporting strafegic objectives. The activity will focus on reviewing existing competencies, assessing current practices, and identifying areas for improvement to ensure alignment across departments and roles it also seeks to promote consistency in competency evaluation, encourage stakeholder engagement, and support workforce development through structured assessment. The review and assessment will generate actionable recommendations to strengthen the framework and enhance organizational effectiveness. Activities include validation, mapping, profiling, through focus group discussions.",
+                checkMatch: (y, m, d) => y === 2026 && (m >= 3 && m <= 5)
+            },
+            {
+                title: "MANDATORY CONTINUING LEGAL EDUCATION (MCLE) FOR PUBLIC SECTOR LAWYERS: Strengthening Legal Capacity and Ethical Accountability",
+                competencies: "All Legal-Related Technical Functional Competencies",
+                target: "All DOTY Lawyers Organic Personnel (Please refer to the CBLDE Functional Competency for CY 2025)",
+                dateRange: "May to June 2028 (Tentative)",
+                duration: "Depending on the approved program",
+                deadline: "15 May 2028",
+                mode: "Online/Face-to-Face",
+                objectives: "This program aims to enhance the competencies of public sector lawyers in the performance of their legal functions, ensuring adherence to effhsical standards, transparency, and accountabilly in government service. It is designed to meet the MCLE requirements while addressing the unique challenges and responsibilities of lawyers in the public sector",
+                checkMatch: (y, m, d) => y === 2026 && (m === 4 || m === 5)
             }
         ];
 
         // --- Dynamic Calendar System ---
         const monthNames = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
         let currentDateObj = new Date();
-        let navMonth = 2; // March (0-indexed) to showcase events
+        let navMonth = 3; // April (0-indexed) to showcase Q2 events
         let navYear = 2026;
 
         document.getElementById('copyright-year').innerText = new Date().getFullYear();
@@ -1188,6 +1251,11 @@
                             <h4>${event.title}</h4>
                             <p><strong>Target Participants:</strong> ${event.target}</p>
                             <p><strong>Schedule:</strong> ${event.dateRange}</p>
+                            ${event.duration && event.duration !== 'N/A' ? `<p><strong>Duration:</strong> ${event.duration}</p>` : ''}
+                            ${event.competencies ? `<p><strong>Competencies:</strong> ${event.competencies}</p>` : ''}
+                            ${event.deadline && event.deadline !== 'N/A' ? `<p><strong>Deadline of Nomination:</strong> ${event.deadline}</p>` : ''}
+                            ${event.mode ? `<p><strong>Mode of Delivery:</strong> ${event.mode}</p>` : ''}
+                            ${event.objectives ? `<p><strong>Course Outline/Objectives:</strong> ${event.objectives}</p>` : ''}
                         </div>
                     `;
                     trainingListContainer.insertAdjacentHTML('beforeend', itemHTML);
@@ -1223,11 +1291,10 @@
             videoSource.src = currentSrc;
             bgVideo.load();
             
-            // Adjust playback speed for specific videos
             if (currentSrc.includes('3273637') || currentSrc.includes('4427698')) {
-                bgVideo.playbackRate = 0.5; // Slow down to half speed
+                bgVideo.playbackRate = 0.5; 
             } else {
-                bgVideo.playbackRate = 1.0; // Normal speed
+                bgVideo.playbackRate = 1.0; 
             }
             
             bgVideo.play().catch(err => console.log("Video play error:", err));
@@ -1260,10 +1327,8 @@
             const rightIndex = (index + 1) % n;
             const farRightIndex = (index + 2) % n;
 
-            // Remove all layout classes
             cardElements.forEach((card) => card.classList.remove('card-far-left', 'card-left', 'card-active', 'card-right', 'card-far-right'));
 
-            // Assign the 5 symmetrical positions
             cardElements[farLeftIndex].classList.add('card-far-left');
             cardElements[leftIndex].classList.add('card-left');
             cardElements[index].classList.add('card-active');
