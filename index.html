@@ -253,7 +253,7 @@
             margin: 0 auto;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             gap: 50px;
             position: relative;
             z-index: 5;
@@ -262,6 +262,7 @@
         .video-text-content {
             flex: 1;
             color: var(--text-light);
+            text-align: center;
         }
 
         .video-text-content h2 {
@@ -270,10 +271,11 @@
             margin-bottom: 15px;
             line-height: 1.2;
             text-transform: uppercase;
+            color: #f4c542;
         }
 
         .video-text-content h2 span {
-            color: #ffcc00; 
+            color: #f4c542; 
         }
 
         .video-text-content p {
@@ -875,11 +877,6 @@
     </header>
 
     <section class="hero-section">
-        <div class="video-bg-container">
-            <video id="bgVideo" autoplay muted playsinline preload="metadata">
-                <source src="" type="video/mp4">
-            </video>
-        </div>
         <div class="video-bg-overlay"></div>
         
         <img class="dotr-logo-overlay" src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Department_of_Transportation_%28Philippines%29.svg" alt="DOTr Watermark">
@@ -904,162 +901,13 @@
         
         <div class="video-showcase-container">
             <div class="video-text-content">
-                <h2>2nd SEMESTER CY 2026<br><span>L&D Programs</span></h2>
-                <p>Watch our latest advisory to explore upcoming training opportunities designed to enhance your skills, knowledge, and commitment to public service.</p>
-                
-                <ol class="program-highlights">
-                    <li>New Government Procurement Act RA.12009</li>
-                    <li>Training Course on Knowledge Management</li>
-                    <li>Coaching And Mentoring for Excellence</li>
-                    <li>HR Analytics</li>
-                    <li>Developmental Conversation for Leaders</li>
-                    <li>Digital Transformation</li>
-                    <li>Fast Lead: Patriotism</li>
-                    <li>Total Quality Management</li>
-                    <li>Fast Lead: Integrity</li>
-                    <li>Certificate In Data Storytelling for Professionals</li>
-                    <li>Competency Validation Focused Group Discussion</li>
-                    <li>Information And Communications Technology (ICT) Training on Digital Literacy and Systems Utilization</li>
-                    <li>Financial Education</li>
-                    <li>AI-Powered Leadership</li>
-                    <li>Livelihood and Entrepreneurship Development Program</li>
-                    <li>Mental Health Well-Being Program</li>
-                    <li>Workforce Planning with Career Development and Succession Management</li>
-                    <li>Fast Lead: Excellence</li>
-                    <li>Mandatory Continuing Legal Education (MCLE) for Public Sector Lawyers: Strengthening Legal Capacity and Ethical Accountability</li>
-                    <li>Continuing Professional Development (CPD) for Public Servants: Advancing Accountability, Competence, and Service Excellence</li>
-                    
-                </ol>
+                <h2>2ND SEM PROGRAMS ARE UNDERWAY</h2>
+                <p>WATCH OUR LATEST ADVISORY TO EXPLORE UPCOMING TRAINING OPPORTUNITIES DESIGNED TO ENHANCE YOUR SKILLS, KNOWLEDGE, AND COMMITMENT TO PUBLIC SERVICE.</p>
 
-            </div>
-            
-            <div class="video-frame-wrapper">
-                <div class="phone-frame">
-                    <video id="showcase-video" src="callforparticipants3.mp4" autoplay loop muted playsinline></video>
-                    <button id="mute-toggle-btn" class="mute-toggle-btn" title="Mute / Unmute">
-                        <i class="fa-solid fa-volume-xmark"></i>
-                    </button>
-                </div>
             </div>
         </div>
     </section>
 
-    <section class="gear-up-banner">
-        <div class="tech-graphics tech-left"></div>
-        <div class="gear-up-content">
-            <h2>CALENDAR OF ACTIVITIES</h2>
-            <p>Plan ahead for your professional development!</p>
-        </div>
-        <div class="tech-graphics tech-right"></div>
-    </section>
-
-    <section class="bottom-section-wrapper">
-        <div class="modern-wave"></div>
-        
-        <div class="bottom-content-section">
-            
-            <div class="calendar-wrapper">
-                <div class="cal-image-container">
-                    <div class="cal-image"></div>
-                </div>
-                
-                <div class="cal-header-banner">
-                    <div class="month-nav-controls">
-                        <i class="fa-solid fa-chevron-left" id="prev-month-btn"></i>
-                        <i class="fa-solid fa-chevron-right" id="next-month-btn"></i>
-                    </div>
-                    <div style="display: flex; align-items: center;">
-                        <h2 id="calendar-month-year">MONTH YEAR</h2>
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Department_of_Transportation_%28Philippines%29.svg" alt="DOTr Logo">
-                    </div>
-                </div>
-
-                <div class="cal-body">
-                    <div class="cal-weekdays">
-                        <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
-                    </div>
-                    <div class="cal-dates" id="calendar-dates-container"></div>
-                </div>
-            </div>
-
-            <div class="cards-container">
-                <button class="nav-arrow left-arrow"><i class="fa-solid fa-angle-left"></i></button>
-                <button class="nav-arrow right-arrow"><i class="fa-solid fa-angle-right"></i></button>
-
-                <div class="travel-card card-active">
-                    <img src="safety.jpg" alt="Safety First">
-                    <div class="card-body">
-                        <h3>Safety First: Building a Resilient and Prepared Workforce</h3>
-                        <a href="https://bit.ly/LNDRegistration2026" target="_blank" class="btn-read-more">Register Here <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-
-                <div class="travel-card card-right">
-                    <img src="project.jpg" alt="Project Management Training">
-                    <div class="card-body">
-                        <h3>Project Management Training</h3>
-                        <a href="https://bit.ly/LNDRegistration2026" target="_blank" class="btn-read-more">Register Here <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-                
-                <div class="travel-card card-far-left">
-                    <img src="change.jpg" alt="Change Management">
-                    <div class="card-body">
-                        <h3>Change Management</h3>
-                        <a href="https://bit.ly/LNDRegistration2026" target="_blank" class="btn-read-more">Register Here <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-
-                <div class="travel-card card-far-left">
-                    <img src="mcle.jpg" alt="MCLE">
-                    <div class="card-body">
-                        <h3>Mandatory Continuing Legal Education (MCLE) for Public Sector Lawyers: Strengthening Legal Capacity and Ethical Accountability</h3>
-                        <a href="https://bit.ly/LNDRegistration2026" target="_blank" class="btn-read-more">Register Here <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-
-                <div class="travel-card card-far-left">
-                    <img src="public.jpg" alt="Public Speaking and Visual Communication Training">
-                    <div class="card-body">
-                        <h3>Public Speaking and Visual Communication Training</h3>
-                        <a href="https://bit.ly/LNDRegistration2026" target="_blank" class="btn-read-more">Register Here <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-
-                <div class="travel-card card-far-left">
-                    <img src="digital.jpg" alt="Digital Transformation Leadership">
-                    <div class="card-body">
-                        <h3>Digital Transformation Leadership</h3>
-                        <a href="https://bit.ly/LNDRegistration2026" target="_blank" class="btn-read-more">Register Here <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-
-                <div class="travel-card card-far-left">
-                    <img src="ngpa.jpg" alt="RA 12009">
-                    <div class="card-body">
-                        <h3>New Government Procurement Act RA 12009</h3>
-                        <a href="https://bit.ly/LNDRegistration2026" target="_blank" class="btn-read-more">Register Here <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-
-                <div class="travel-card card-far-left">
-                    <img src="cpdpublic.jpg" alt="Continuing Professional Development">
-                    <div class="card-body">
-                        <h3>Continuing Professional Development (CPD) for Public Servants: Advancing Accountability, Competence, and Service Excellence</h3>
-                        <a href="https://bit.ly/CY2026CPD-registration" target="_blank" class="btn-read-more">Register Here <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-
-                <div class="travel-card card-far-left">
-                    <img src="competencyrev.jpg" alt="Competency Framework Review and Assessment">
-                    <div class="card-body">
-                        <h3>Organization-Wide Competency Framework Review and Assessment</h3>
-                        <a href="https://bit.ly/LNDRegistration2026" target="_blank" class="btn-read-more">Register Here <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <div id="trainingModal" class="modal">
         <div class="modal-content">
@@ -1085,23 +933,6 @@
     </div>
 
     <script>
-        // --- Video Audio Controls ---
-        const showcaseVideo = document.getElementById('showcase-video');
-        const muteToggleBtn = document.getElementById('mute-toggle-btn');
-        const muteIcon = muteToggleBtn.querySelector('i');
-
-        muteToggleBtn.addEventListener('click', () => {
-            if (showcaseVideo.muted) {
-                showcaseVideo.muted = false;
-                muteIcon.classList.remove('fa-volume-xmark');
-                muteIcon.classList.add('fa-volume-high');
-            } else {
-                showcaseVideo.muted = true;
-                muteIcon.classList.remove('fa-volume-high');
-                muteIcon.classList.add('fa-volume-xmark');
-            }
-        });
-
         // --- Training Database ---
         const trainingDatabase = [
             {
@@ -1315,46 +1146,6 @@
                 trainingModal.classList.remove('show');
             }
         });
-
-
-        // --- Background Video Logic ---
-        const dotVideos = [
-            'https://videos.pexels.com/video-files/7252274/7252274-uhd_2560_1440_25fps.mp4',
-            'https://videos.pexels.com/video-files/29337317/12645572_2560_1440_120fps.mp4',
-            'https://videos.pexels.com/video-files/3273637/3273637-hd_1920_1080_30fps.mp4',
-            'https://videos.pexels.com/video-files/4427698/4427698-hd_1080_1920_30fps.mp4',
-            'https://videos.pexels.com/video-files/36066940/15295954_1920_1080_24fps.mp4',
-        ];
-
-        let currentVideoIndex = 0;
-        const bgVideo = document.getElementById('bgVideo');
-
-        function loadVideo(index) {
-            const videoSource = bgVideo.querySelector('source');
-            const currentSrc = dotVideos[index];
-            videoSource.src = currentSrc;
-            bgVideo.load();
-            
-            if (currentSrc.includes('3273637') || currentSrc.includes('4427698')) {
-                bgVideo.playbackRate = 0.5; 
-            } else {
-                bgVideo.playbackRate = 1.0; 
-            }
-            
-            bgVideo.play().catch(err => console.log("Video play error:", err));
-        }
-
-        function rotateVideo() {
-            bgVideo.classList.add('fade-out');
-            setTimeout(() => {
-                currentVideoIndex = (currentVideoIndex + 1) % dotVideos.length;
-                loadVideo(currentVideoIndex);
-                bgVideo.classList.remove('fade-out');
-            }, 500);
-        }
-
-        loadVideo(0);
-        setInterval(rotateVideo, 10000);
 
 
         // --- 5-Card Carousel Logic ---
