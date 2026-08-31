@@ -850,7 +850,15 @@
             display: block;
             color: #111;
             font-size: 0.88rem;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
+        }
+
+        .upcoming-event-item .training-type-badge {
+            display: inline-flex;
+            margin: 0 0 6px;
+            padding: 4px 8px;
+            font-size: 0.58rem;
+            letter-spacing: 0.05em;
         }
 
         .upcoming-event-item span {
@@ -1708,31 +1716,32 @@
                 trainingtype: "In-House Training",
                 checkMatch: (y, m, d) => y === 2026 && m === 9 && d >= 6 && d <= 7
             },
+            
             {
                 title: "CONTINUING PROFESSIONAL DEVELOPMENT (CPD) FOR PUBLIC SERVANTS: Advancing Accountability, Competence, and Service Excellence",
                 competencies: "All Technical/Functional Competericies related",
-                target: "All DOT Professionals RA 1080 (Board License) Cen Personnel. Al least 50 participants",
-                dateRange: "April to June 2026",
+                target: "All DOTr Professionals RA 1080 (Board License) Cen Personnel. Al least 20-30 participants",
+                dateRange: "August to December 2026",
                 duration: "Depending on the selected program",
-                deadline: "24 April 2020",
-                mode: "Online Onsite",
+                deadline: "N/A",
+                mode: "Online/Onsite",
                 objectives: "This Continuing Professional Development (CPD) program aims to enhance the competencies. ethical accountability, and service ortentation of public servants. The course is designed to strengthen their commitment to public trust, equip them with relevant knowledge and skills, and promole a culture of integrity and excellence in government service",
                 registrationLink: "https://bit.ly/CY2026CPD-registration",
-                image: "cpdpublic.jpg",
-                checkMatch: (y, m, d) => y === 2026 && (m >= 3 && m <= 5)
+                image: null,
+                checkMatch: (y, m, d) => y === 2026 && (m >= 8 && m <= 11)
             },
             {
                 title: "MANDATORY CONTINUING LEGAL EDUCATION (MCLE) FOR PUBLIC SECTOR LAWYERS: Strengthening Legal Capacity and Ethical Accountability",
                 competencies: "All Legal-Related Technical Functional Competencies",
-                target: "All DOTY Lawyers Organic Personnel (Please refer to the CBLDE Functional Competency for CY 2025)",
+                target: "All DOTr Lawyers Organic Personnel (Please refer to the CBLDE Functional Competency for CY 2025)",
                 dateRange: "May to June 2028 (Tentative)",
                 duration: "Depending on the approved program",
-                deadline: "15 May 2028",
+                deadline: "N/A",
                 mode: "Online/Face-to-Face",
                 objectives: "This program aims to enhance the competencies of public sector lawyers in the performance of their legal functions, ensuring adherence to effhsical standards, transparency, and accountabilly in government service. It is designed to meet the MCLE requirements while addressing the unique challenges and responsibilities of lawyers in the public sector",
-                registrationLink: "https://bit.ly/LNDRegistration2026",
-                image: "mcle.jpg",
-                checkMatch: (y, m, d) => y === 2026 && (m === 4 || m === 10)
+                registrationLink: null,
+                image: null,
+                checkMatch: (y, m, d) => y === 2026 && m === 11
             }
         ];
 
