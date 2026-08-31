@@ -253,16 +253,130 @@
             margin: 0 auto;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             gap: 50px;
             position: relative;
             z-index: 5;
         }
 
+        .program-spotlight {
+            width: min(1280px, calc(100% - 18px));
+            margin: 0 auto 20px;
+            position: relative;
+            z-index: 10;
+            background: linear-gradient(180deg, rgba(250, 251, 255, 0.98), rgba(229, 237, 255, 0.98));
+            border: 1px solid rgba(11, 61, 145, 0.08);
+            box-shadow: 0 12px 30px rgba(11, 61, 145, 0.08);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .program-spotlight-inner {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0;
+            padding: 0;
+        }
+
+        .program-spotlight-card {
+            display: grid;
+            grid-template-columns: 0.85fr 1.15fr;
+            gap: 12px;
+            align-items: center;
+            padding: 12px;
+        }
+
+        .program-spotlight-image-wrap {
+            position: relative;
+            min-height: 180px;
+            width: 100%;
+            max-width: 260px;
+            margin-left: auto;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #eef4ff;
+            border: 1px solid rgba(11,61,145,0.08);
+        }
+
+        .program-spotlight-image-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .program-spotlight-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--primary-color);
+            border-radius: 999px;
+            padding: 6px 10px;
+            font-size: 0.56rem;
+            letter-spacing: 0.08em;
+            font-weight: 800;
+            text-transform: uppercase;
+            box-shadow: 0 6px 14px rgba(11,61,145,0.08);
+        }
+
+        .program-spotlight-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px 8px 10px 0;
+        }
+
+        .program-spotlight-info h4 {
+            font-size: clamp(1rem, 1.7vw, 1.7rem);
+            line-height: 1.2;
+            color: #0d2b5b;
+            font-weight: 800;
+        }
+
+        .program-spotlight-list {
+            list-style: none;
+            display: grid;
+            gap: 6px;
+            color: #24384d;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .program-spotlight-list li {
+            position: relative;
+            padding-left: 18px;
+        }
+
+        .program-spotlight-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: #d62828;
+            font-size: 1.2rem;
+        }
+
+        .program-spotlight-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 6px;
+        }
+
+        .program-spotlight-link span {
+            font-size: 1.3rem;
+        }
+
         .video-text-content {
             flex: 1;
             color: var(--text-light);
-            text-align: center;
         }
 
         .video-text-content h2 {
@@ -271,11 +385,10 @@
             margin-bottom: 15px;
             line-height: 1.2;
             text-transform: uppercase;
-            color: #f4c542;
         }
 
         .video-text-content h2 span {
-            color: #f4c542; 
+            color: #ffcc00; 
         }
 
         .video-text-content p {
@@ -333,6 +446,19 @@
             overflow: hidden;
             box-shadow: 0 25px 50px rgba(0,0,0,0.5);
             position: relative;
+        }
+
+        .phone-frame::after {
+            content: '';
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            width: 82px;
+            height: 4px;
+            transform: translateX(-50%);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: 3;
         }
 
         .phone-frame video {
@@ -465,11 +591,54 @@
             z-index: 5; 
         }
 
-        /* --- Left Side: Custom Dynamic Calendar Design --- */
-        .calendar-wrapper {
+        .calendar-panel {
             flex: 1;
             min-width: 480px;
-            max-width: 550px;
+            max-width: 700px;
+            background: rgba(255, 255, 255, 0.72);
+            border-radius: 16px;
+            border: 1px solid rgba(18, 67, 134, 0.12);
+            box-shadow: 0 12px 30px rgba(11, 61, 145, 0.08);
+            overflow: hidden;
+        }
+
+        .calendar-tab-bar {
+            display: flex;
+            background: linear-gradient(135deg, #f8fbff, #eaf3ff);
+            border-bottom: 1px solid rgba(18, 67, 134, 0.12);
+        }
+
+        .calendar-tab {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 16px 12px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #4e5f7c;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-tab.active {
+            background: #124386;
+            color: #ffffff;
+        }
+
+        .calendar-tab-panel {
+            display: none;
+            padding: 18px;
+        }
+
+        .calendar-tab-panel.active {
+            display: block;
+        }
+
+        /* --- Left Side: Custom Dynamic Calendar Design --- */
+        .calendar-wrapper {
+            width: 100%;
             height: 380px;
             background-color: #124386; 
             border-radius: 12px;
@@ -626,6 +795,248 @@
             visibility: hidden;
         }
 
+        .event-list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 380px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .upcoming-events {
+            margin-top: 18px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(18, 67, 134, 0.1);
+            border-radius: 12px;
+            padding: 18px 16px 10px;
+            box-shadow: 0 8px 20px rgba(18, 67, 134, 0.06);
+        }
+
+        .upcoming-events.tab-hidden {
+            display: none !important;
+        }
+
+        .upcoming-events h3 {
+            margin: 0 0 12px;
+            color: var(--primary-color);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .upcoming-events-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .upcoming-event-item {
+            background: linear-gradient(135deg, #f9fbff, #edf5ff);
+            border-left: 4px solid var(--secondary-color);
+            border-radius: 8px;
+            padding: 12px 14px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .upcoming-event-item:hover,
+        .upcoming-event-item:focus-visible {
+            transform: translateY(-1px);
+            outline: none;
+        }
+
+        .upcoming-event-item strong {
+            display: block;
+            color: #111;
+            font-size: 0.88rem;
+            margin-bottom: 4px;
+        }
+
+        .upcoming-event-item span {
+            color: #4f5d72;
+            font-size: 0.77rem;
+            display: block;
+            line-height: 1.5;
+        }
+
+        .event-list-item {
+            background: linear-gradient(135deg, #f7faff, #edf5ff);
+            border-left: 4px solid var(--secondary-color);
+            border-radius: 10px;
+            padding: 14px 16px;
+            box-shadow: 0 6px 18px rgba(18, 67, 134, 0.06);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .event-list-item.ongoing-training {
+            border-left-color: #16834b;
+        }
+
+        .event-list-item.upcoming-training {
+            border-left-color: var(--primary-color);
+        }
+
+        .event-list-item.conducted-training {
+            border-left-color: #d9a400;
+        }
+
+        .event-list-item:hover,
+        .event-list-item:focus-visible {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(18, 67, 134, 0.12);
+            outline: none;
+        }
+
+        .event-list-date {
+            display: inline-block;
+            background: var(--primary-color);
+            color: #fff;
+            font-size: 0.73rem;
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 999px;
+            margin-bottom: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .training-type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0 0 8px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 0.66rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            background: #22a35a;
+            color: #ffffff;
+            border: 1px solid rgba(11, 61, 145, 0.15);
+        }
+
+        .training-type-badge.in-house-training {
+            background: #22a35a;
+            color: #ffffff;
+            border-color: rgba(18, 101, 58, 0.18);
+        }
+
+        .training-type-badge.external-training {
+            background: #22a35a;
+            color: #ffffff;
+            border-color: rgba(146, 100, 0, 0.18);
+        }
+
+        .training-type-badge.technical-training {
+            background: #22a35a;
+            color: #ffffff;
+            border-color: rgba(45, 92, 201, 0.18);
+        }
+
+        .training-type-badge.management-training {
+            background: #22a35a;
+            color: #ffffff;
+            border-color: rgba(108, 66, 179, 0.18);
+        }
+
+        .event-list-item h4 {
+            margin: 0 0 8px;
+            color: #111;
+            font-size: 0.98rem;
+            line-height: 1.4;
+        }
+
+        .event-list-item p {
+            margin: 4px 0;
+            color: #4d5c70;
+            font-size: 0.82rem;
+            line-height: 1.5;
+        }
+
+        .event-list-item strong {
+            color: var(--primary-color);
+        }
+
+        .event-month-separator {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: var(--primary-color);
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            margin: 22px 0 10px;
+            padding: 10px 14px;
+            border-left: 4px solid var(--secondary-color);
+            border-radius: 7px;
+            background: linear-gradient(90deg, #eaf3ff, rgba(234, 243, 255, 0.35));
+            text-transform: uppercase;
+        }
+
+        .event-month-separator::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            flex: 0 0 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .event-month-separator.ongoing-separator {
+            color: #16834b;
+            border-left-color: #16834b;
+            background: linear-gradient(90deg, #e2f5ea, rgba(226, 245, 234, 0.35));
+        }
+
+        .event-month-separator.upcoming-separator {
+            color: var(--primary-color);
+            background: #ffffff;
+            border-left-color: var(--primary-color);
+            box-shadow: 0 5px 14px rgba(18, 67, 134, 0.16);
+        }
+
+        .event-month-separator.conducted-separator {
+            color: #6b4a00;
+            border-left-color: #d9a400;
+            background: linear-gradient(90deg, #fff1c7, rgba(255, 241, 199, 0.35));
+        }
+
+        .event-register-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .event-register-btn:hover {
+            background-color: #a02020;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(212, 40, 40, 0.3);
+        }
+
+        .event-register-btn:disabled {
+            background-color: #999;
+            color: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .event-register-btn:disabled:hover {
+            background-color: #999;
+            transform: none;
+        }
+
         /* --- Right Side: Carousel Styles --- */
         .cards-container {
             flex: 1;
@@ -780,7 +1191,7 @@
             padding: 35px 40px;
             border-radius: 12px;
             width: 90%;
-            max-width: 600px;
+            max-width: 800px;
             position: relative;
             transform: translateY(-20px);
             transition: transform 0.3s ease;
@@ -849,6 +1260,17 @@
             color: var(--primary-color);
         }
 
+        .modal-image {
+            width: 100%;
+                height: 280px;
+                max-width: 100%;
+                object-fit: contain;
+                background-color: #ffffff;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
         .no-event-msg {
             text-align: center;
             color: #777;
@@ -877,6 +1299,11 @@
     </header>
 
     <section class="hero-section">
+        <div class="video-bg-container">
+            <video id="bgVideo" autoplay muted playsinline preload="metadata">
+                <source src="" type="video/mp4">
+            </video>
+        </div>
         <div class="video-bg-overlay"></div>
         
         <img class="dotr-logo-overlay" src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Department_of_Transportation_%28Philippines%29.svg" alt="DOTr Watermark">
@@ -899,14 +1326,65 @@
         <div class="deco-shape deco-1"></div>
         <div class="deco-shape deco-2"></div>
         
-        <div class="video-showcase-container">
-            <div class="video-text-content">
-                <h2>2ND SEM PROGRAMS ARE UNDERWAY</h2>
-                <p>WATCH OUR LATEST ADVISORY TO EXPLORE UPCOMING TRAINING OPPORTUNITIES DESIGNED TO ENHANCE YOUR SKILLS, KNOWLEDGE, AND COMMITMENT TO PUBLIC SERVICE.</p>
+        <div style="width: 100%; padding: 0 50px; margin-bottom: 40px;">
+            <h2 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; margin-bottom: 15px; line-height: 1.2; text-transform: uppercase; color: white;">2nd SEMESTER CY 2026<br><span style="color: #ffcc00;">L&D Programs</span></h2>
+            <p style="font-size: 1.1rem; margin-bottom: 0; color: var(--text-gray); line-height: 1.6; max-width: 700px;">Watch our latest advisory to explore upcoming training opportunities designed to enhance your skills, knowledge, and commitment to public service.</p>
+        </div>
+        
+        <div class="video-showcase-container" style="flex-wrap: wrap; gap: 100px; align-items: stretch; justify-content: center;">
+            <div class="calendar-panel" style="flex: 0 1 700px;">
+                <div class="calendar-tab-bar">
+                    <button class="calendar-tab active" data-tab="calendar-view">Calendar</button>
+                    <button class="calendar-tab" data-tab="event-list-view">L&D Programs</button>
+                </div>
 
+                <div id="calendar-view" class="calendar-tab-panel active">
+                    <div class="calendar-wrapper">
+                        <div class="cal-image-container">
+                            <div class="cal-image"></div>
+                        </div>
+                        
+                        <div class="cal-header-banner">
+                            <div class="month-nav-controls">
+                                <i class="fa-solid fa-chevron-left" id="prev-month-btn"></i>
+                                <i class="fa-solid fa-chevron-right" id="next-month-btn"></i>
+                            </div>
+                            <div style="display: flex; align-items: center;">
+                                <h2 id="calendar-month-year">MONTH YEAR</h2>
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Department_of_Transportation_%28Philippines%29.svg" alt="DOTr Logo">
+                            </div>
+                        </div>
+
+                        <div class="cal-body">
+                            <div class="cal-weekdays">
+                                <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                            </div>
+                            <div class="cal-dates" id="calendar-dates-container"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="event-list-view" class="calendar-tab-panel">
+                    <div class="event-list-container" id="event-list-container"></div>
+                </div>
+
+                <div class="upcoming-events">
+                    <h3>Upcoming Events</h3>
+                    <div class="upcoming-events-list" id="upcoming-events-list"></div>
+                </div>
+            </div>
+            
+            <div class="video-frame-wrapper" style="flex: 0 0 auto; align-items: center;">
+                <div class="phone-frame">
+                    <video id="showcase-video" src="callforparticipants3.mp4" autoplay loop muted playsinline></video>
+                    <button id="mute-toggle-btn" class="mute-toggle-btn" title="Mute / Unmute">
+                        <i class="fa-solid fa-volume-xmark"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </section>
+
 
 
     <div id="trainingModal" class="modal">
@@ -933,114 +1411,28 @@
     </div>
 
     <script>
-        // --- Training Database ---
-        const trainingDatabase = [
-            {
-                title: "SAFETY FIRST: BUILDING A RESILIENT AND PREPARED WORKFORCE",
-                competencies: "Core Competency (Teamwork)",
-                target: "All Employees",
-                dateRange: "April 30, 2026",
-                duration: "1 Day",
-                deadline: "21 Apr 2026",
-                mode: "Online via MS Teams",
-                objectives: "Recogrens workplace hanwits and p Apply safety pimonds and Damasta per Communicate effung вирост provement thoughing and suggesting prov",
-                checkMatch: (y, m, d) => y === 2026 && m === 3 && d === 30
-            },
-            {
-                title: "CHANGE MANAGEMENT",
-                competencies: "Leadning Change. Advance and Superior",
-                target: "All Current Leaders (SG22 and up) who lacks 40 hours supervisory/managerial requirements. Maximum of 3 participants",
-                dateRange: "May 05-08, 2026 (Out-of-House)",
-                duration: "4 days",
-                deadline: "April 28, 2026",
-                mode: "Face-to-Face",
-                objectives: "Change Management training equips participants with the knowledge tools and and techniques to effectively lead manage, and adapt to organizational change. It focuses on understanding the human side of change, building resilience and fostering a culture that embraces transformation. Through interactive discussions, case studies, and practical exercises participants will team how to anticipate challenges, minimize resistance, and drive successful outcomes in dynamic environments. Objectives: 1. Define change management and its importance in organizational success. 2. Identify roles and responsibilities in managing change 3. Diagnose sources of resistance and apply strategies to overcome them. 4. Ensure long-tent adoption and continuous improvement",
-                checkMatch: (y, m, d) => y === 2026 && m === 4 && d >= 5 && d <= 8
-            },
-            {
-                title: "PROJECT MANAGEMENT TRAINING",
-                competencies: "Project Management",
-                target: "All Offices/Services/Division. At least 50-70 participants",
-                dateRange: "May 25-28, 2026",
-                duration: "4 days",
-                deadline: "May 15 2026",
-                mode: "Online/Face-to-face",
-                objectives: "The Project Management Training is with the asse από andr program covers the fact manageme. The trainingsute for professionals acro Understand core proper manage posant and fun in prrect managem amemode and metho Manitor and contre performance by ang kapertama and reporting t ack progress and project su sstaly by contacting proyectators tocuments and hand",
-                checkMatch: (y, m, d) => y === 2026 && m === 4 && d >= 25 && d <= 28
-            },
-            {
-                title: "PUBLIC SPEAKING AND VISUAL COMMUNICATION TRAINING",
-                competencies: "Presentation Skills",
-                target: "All Offices/Services/Division. At least 60-70 participants",
-                dateRange: "June 03-04 2026",
-                duration: "2 days",
-                deadline: "May 26, 2026",
-                mode: "Face-to-Face",
-                objectives: "This 2-day training program equips participares with essential skills for effective public speaking and communication. It addresses common speaking tears, guides attendees attendees in organizing impactfil vimal.com thoughts clearly, and facilitates the delivery of engaging presentations that connect with audiences. Participants will leam practical techniques to enhance their voice, body language, and ovmall confidence. The program also covers creating compeiling visual aide that make messages stand out. Understand the basics of effective public spessung and overcome common fears Organize and deliver cinar, engaging presentations that connect with the authence Use simple techniques to improve voice, body language and confidence weste speaking Create soul aids that support and enhance their message, making presentations more impactful Practice presenting with feedback to improve their skills in a supportive environment. Apply these skills to everyday work situations, meetings, and harmal presentations",
-                checkMatch: (y, m, d) => y === 2026 && m === 5 && (d === 3 || d === 4)
-            },
-            {
-                title: "DIGITAL TRANSFORMATION LEADERSHIP",
-                competencies: "Leadning Change. Advance and Superior",
-                target: "All Emerging and Current Leaders (SG15 and up) who lacks 40 hours supervisory/managerial requirements. Maximum of 60-70 participants",
-                dateRange: "June 09-10 2026",
-                duration: "2 days",
-                deadline: "June 03. 2026",
-                mode: "Online via MS teams",
-                objectives: "In fast-changing digital landscape, organizations need leaders who can dive innovation adapt to disruption, and inspire teams through transformation. This Training today's equiția leaders and emerging leaders with the vision skills and strategies to lead successful digital initiatives. 1. Craft a compelling digital transformation vision 2. Lead with confidence in times of disnption 3. Translate digital strategies into measurable organizational outcomes mes of disruption 4. Inspire teams to embrace innovation and continuous improvement",
-                checkMatch: (y, m, d) => y === 2026 && m === 5 && (d === 9 || d === 10)
-            },
-            {
-                title: "NEW GOVERNMENT PROCUREMENT ACT RA 12009",
-                competencies: "Procurement Proficiency",
-                target: "BAC Members, TWG Members, Procurement Management Service, End-users Representative (200-250 participants)",
-                dateRange: "June 23-25 2026",
-                duration: "3 days",
-                deadline: "June 4, 2028",
-                mode: "Online/Face-to-Face",
-                objectives: "This capacity development initiative arms to equip Bids and Awards Committee (BAC) Members BAC Secretariat Members, and Technical Working Groups (TWGs) of all government instrumentalities with the critical and essential knowledge, practical skills and readiness to implement the key reforms introduced under the NGPA",
-                checkMatch: (y, m, d) => y === 2026 && m === 5 && d >= 23 && d <= 25
-            },
-            {
-                title: "CONTINUING PROFESSIONAL DEVELOPMENT (CPD) FOR PUBLIC SERVANTS: Advancing Accountability, Competence, and Service Excellence",
-                competencies: "All Technical/Functional Competericies related",
-                target: "All DOT Professionals RA 1080 (Board License) Cen Personnel. Al least 50 participants",
-                dateRange: "April to June 2026",
-                duration: "Depending on the selected program",
-                deadline: "24 April 2020",
-                mode: "Online Onsite",
-                objectives: "This Continuing Professional Development (CPD) program aims to enhance the competencies. ethical accountability, and service ortentation of public servants. The course is designed to strengthen their commitment to public trust, equip them with relevant knowledge and skills, and promole a culture of integrity and excellence in government service",
-                checkMatch: (y, m, d) => y === 2026 && (m >= 3 && m <= 5)
-            },
-            {
-                title: "ORGANIZATION WIDE COMPETENCY FRAMEWORK REVIEW AND ASSESSMENT",
-                competencies: "Organizational Development",
-                target: "All Offices/Services/Division. At least 60-70 participants per Session",
-                dateRange: "April to June 2020",
-                duration: "N/A",
-                deadline: "N/A",
-                mode: "Face-to-Face",
-                objectives: "The Organization-Wide Competency Framework Review and Assessment aims to provide participants with a comprehensive understanding of the organization's competency framework. and its role in supporting strafegic objectives. The activity will focus on reviewing existing competencies, assessing current practices, and identifying areas for improvement to ensure alignment across departments and roles it also seeks to promote consistency in competency evaluation, encourage stakeholder engagement, and support workforce development through structured assessment. The review and assessment will generate actionable recommendations to strengthen the framework and enhance organizational effectiveness. Activities include validation, mapping, profiling, through focus group discussions.",
-                checkMatch: (y, m, d) => y === 2026 && (m >= 3 && m <= 5)
-            },
-            {
-                title: "MANDATORY CONTINUING LEGAL EDUCATION (MCLE) FOR PUBLIC SECTOR LAWYERS: Strengthening Legal Capacity and Ethical Accountability",
-                competencies: "All Legal-Related Technical Functional Competencies",
-                target: "All DOTY Lawyers Organic Personnel (Please refer to the CBLDE Functional Competency for CY 2025)",
-                dateRange: "May to June 2028 (Tentative)",
-                duration: "Depending on the approved program",
-                deadline: "15 May 2028",
-                mode: "Online/Face-to-Face",
-                objectives: "This program aims to enhance the competencies of public sector lawyers in the performance of their legal functions, ensuring adherence to effhsical standards, transparency, and accountabilly in government service. It is designed to meet the MCLE requirements while addressing the unique challenges and responsibilities of lawyers in the public sector",
-                checkMatch: (y, m, d) => y === 2026 && (m === 4 || m === 5)
+        // --- Video Audio Controls ---
+        const showcaseVideo = document.getElementById('showcase-video');
+        const muteToggleBtn = document.getElementById('mute-toggle-btn');
+        const muteIcon = muteToggleBtn.querySelector('i');
+
+        muteToggleBtn.addEventListener('click', () => {
+            if (showcaseVideo.muted) {
+                showcaseVideo.muted = false;
+                muteIcon.classList.remove('fa-volume-xmark');
+                muteIcon.classList.add('fa-volume-high');
+            } else {
+                showcaseVideo.muted = true;
+                muteIcon.classList.remove('fa-volume-high');
+                muteIcon.classList.add('fa-volume-xmark');
             }
-        ];
+        });
 
         // --- Dynamic Calendar System ---
         const monthNames = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
         let currentDateObj = new Date();
-        let navMonth = 3; // April (0-indexed) to showcase Q2 events
-        let navYear = 2026;
+        let navMonth = currentDateObj.getMonth();
+        let navYear = currentDateObj.getFullYear();
 
         document.getElementById('copyright-year').innerText = new Date().getFullYear();
 
@@ -1104,16 +1496,681 @@
             renderDynamicCalendar();
         });
 
+        // --- Training Database ---
+        const trainingDatabase = [
+            {
+                title: "NEW GOVERNMENT PROCUREMENT ACT RA 12009",
+                competencies: "Procurement Proficiency",
+                target: "BAC Members, TWG Members, Procurement Management Service, End-users Representative (200-250 participants)",
+                dateRange: "July 14-16 2026",
+                duration: "3 days",
+                deadline: "June 26, 2026",
+                mode: "Online/Face-to-Face",
+                objectives: "This capacity development initiative arms to equip Bids and Awards Committee (BAC) Members BAC Secretariat Members, and Technical Working Groups (TWGs) of all government instrumentalities with the critical and essential knowledge, practical skills and readiness to implement the key reforms introduced under the NGPA",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: "2ndSem_NGPA.png",
+                trainingtype: "In-House Training",
+                checkMatch: (y, m, d) => y === 2026 && m === 7 && d >= 14 && d <= 16
+            },
+            {
+                title: "TRAINING COURSE ON KNOWLEDGE MANAGEMENT",
+                competencies: "Knowledge Management",
+                target: "Knowledge Management Unit. Maximum of 5 participants",
+                dateRange: "August 04-06, 2026",
+                duration: "3 days",
+                deadline: "August 03, 2026",
+                mode: "Face-to-Face",
+                objectives: "This capacity development initiative is designed to equip End‑Users of the DOTr Central Office and other government instrumentalities with the essential knowledge, practical skills, and readiness to implement the key reforms introduced under the New Government Procurement Act (NGPA). The program will provide participants with a clear understanding of the law’s provisions, highlight critical changes from previous frameworks, and offer practical guidance on how to apply these reforms in day‑to‑day procurement processes. By combining technical input with interactive learning, the training aims to build confidence among end‑users, promote transparency and efficiency in procurement activities, and ultimately contribute to more accountable and effective governance.",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: "2ndSem_KM.png",
+                trainingtype: "Out-of-House Training",
+                checkMatch: (y, m, d) => y === 2026 && m === 7 && d >= 4 && d <= 6
+            },
+            {
+                title: "TECHNICAL WRITING WORKSHOP",
+                competencies: "Technical Writing",
+                target: "All Offices/Services/ Divisions. Maximum of 5 participants",
+                dateRange: "August 17, 2026",
+                duration: "1 day",
+                deadline: "August 10, 2026",
+                mode: "Online",
+                objectives: "Effective written communication is essential in today’s professional environment, as clear, concise, and well-structured writing enables professionals to convey ideas accurately, strengthen collaboration, and enhance workplace credibility. Through practical discussions and guided exercises, participants will strengthen their professional written communication skills, apply the ROAM framework to structure messages effectively, practice the 6 Cs of Communication (Clarity, Correctness, Conciseness, Concreteness, Completeness, and Consideration), utilize positive phrasing techniques in professional documents, and leverage Artificial Intelligence tools to support and enhance workplace writing.",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: "2ndSem_Technical Writing.png",
+                trainingtype: "Out-of-House Training",
+                checkMatch: (y, m, d) => y === 2026 && m === 7 && d === 17 
+            },
+            {
+                title: "COACHING AND MENTORING FOR EXCELLENCE",
+                competencies: "Managing Performance and Coaching Results",
+                target: "All Emerging Leaders (SG 15 and up) who lacks 40 hours supervisory/managerial requirements. At least 60 – 70 participants",
+                dateRange: "August 18-19, 2026",
+                duration: "2 days",
+                deadline: "August 11, 2026",
+                mode: "Online",
+                objectives: "Managing performance is no longer just about setting targets and conducting annual reviews; it requires a shift from directing to developing. High-performing organizations rely on leaders who can coach in the moment and mentor for long-term capability. This practical, skill-building workshop equips managers and executives with the tools to transition from traditional supervisors to impactful coaches and mentors. Participants will learn how to hold transformative performance conversations, use structured coaching models (such as the GROW framework), establish psychologically safe mentoring relationships, and build a culture of continuous learning and accountability.",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: "2ndSem_Coaching and Mentoring.png",
+                trainingtype: "Out-of-House Training",
+                checkMatch: (y, m, d) => y === 2026 && m === 7 && d >= 18 && d <= 19
+            },
+            {
+                title: "HR ANALYTICS",
+                competencies: "Strategic Human Resource Management",
+                target: "All Offices/Services/ Divisions. At least 10 participants",
+                dateRange: "August 26-27, 2026",
+                duration: "2 days",
+                deadline: "August 14, 2026",
+                mode: "Online",
+                objectives: "Human Resource Management Practitioners are presented with big powerful data. This, when maximized is proven to lead to evidenced-based human capital decisions. The challenge however lies when HR data is not converted into vital information thereby devoiding the agency the opportunity to better think strategically using people analytics to support agency strategic goals.",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: "2ndSem_HR Analytics.png",
+                trainingtype: "Out-of-House Training",
+                checkMatch: (y, m, d) => y === 2026 && m === 7 && d >= 26 && d <= 27
+            },
+            {
+                title: "DEVELOPMENTAL CONVERSATION FOR LEADERS",
+                competencies: "Managing Performance and Coaching Results",
+                target: "All Emerging Leaders (SG 15 and up) who lacks 40 hours supervisory/managerial requirements. At least 60 – 70 participants",
+                dateRange: "September 08-10, 2026",
+                duration: "3 days",
+                deadline: "August 28, 2026",
+                mode: "Online",
+                objectives: "Developmental conversations, in terms of coaching and mentoring, are workplace learning approaches that can be used by leaders to enable individuals to realize their full potentials. This is a blended course that will guide the participant leaders to effectively conduct developmental conversations with others using a structured approach. This particular course uses group mentoring/coaching to develop mentors/coaches that can facilitate developmental conversations by handholding them through the various stages of the process.",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: "2ndSem_Developmental Conversation.png",
+                trainingtype: "Out-of-House Training",
+                checkMatch: (y, m, d) => y === 2026 && m === 8 && d >= 8 && d <= 10
+            },
+            {
+                title: "DIGITAL TRANSFORMATION",
+                competencies: "Digital Innovation",
+                target: "All Offices/Services/ Division. At least 20 participants",
+                dateRange: "September 10-12, 2026",
+                duration: "3 days",
+                deadline: "September 02, 2026",
+                mode: "Online",
+                objectives: "This course is designed to equip civil servants with foundational knowledge and skills in digital transformation, tailored specifically to the public sector. Participants will explore key technologies, understand their implications for government operations, and learn how to develop and implement digital strategies within their agencies. Through a mix of theoretical insights, real-world case studies, and practical workshops, this course shall enable civil servants to lead and support digital initiatives in their own agency that will enhance service delivery and operational efficiency.",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: "2ndSem_Digital Transformation.png",
+                trainingtype: "Out-of-House Training",
+                checkMatch: (y, m, d) => y === 2026 && m === 8 && d >= 10 && d <= 12
+            },
+            {
+                title: "FAST LEAD: PATRIOTISM",
+                competencies: "Nationalism",
+                target: "All Employees. Maximum of 50 participants per batch",
+                dateRange: "September 14, 2026",
+                duration: "1 day",
+                deadline: "September 07, 2026",
+                mode: "Online",
+                objectives: "What does it truly mean to be patriotic in today’s fast-changing world? While patriotism is often viewed through a historical lens or expressed through ceremonial displays, genuine love for country is reflected in how we lead, innovate, and serve our communities every day. Join us for this engaging session under the Fast Lead Series as we explore the evolving meaning of patriotism and discover how personal accountability, professional integrity, and active citizenship contribute to national progress. Participants will gain insights into redefining patriotism from passive national pride to purposeful civic leadership, understand how strong work ethics, integrity, and community engagement help build a stronger nation, and learn practical ways to foster social responsibility and create positive impact within their own spheres of influence.",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: "2ndSem_Fast Lead Patriotism.png",
+                trainingtype: "Out-of-House Training",
+                checkMatch: (y, m, d) => y === 2026 && m === 8 && d === 14
+            },
+            {
+                title: "PUBLIC SERVICE ETHICS AND ACCOUNTABILITY FOR LEADERS",
+                competencies: "Creating and Nurturing High Performing Organization",
+                target: "All Emerging Leaders (SG 15 and up) who lacks 40 hours supervisory/managerial requirements. At least 20 participants",
+                dateRange: "September 16-17, 2026",
+                duration: "2 days",
+                deadline: "September 09, 2026",
+                mode: "Online",
+                objectives: "Public leadership carries a unique moral obligation: decision-making directly impacts public welfare, citizen trust, and institutional credibility. Misalignment between policy and ethical conduct—whether through conflicts of interest, lack of transparency, or misuse of authority—undermines governance and public confidence.  This executive training equips public sector leaders with the legal knowledge, moral frameworks, and operational strategies required to uphold ethical standards and institutional accountability. Participants will examine statutory codes of conduct, master ethical decision-making under political and budgetary pressure, and learn how to foster a organizational culture where integrity is actively practiced at every level. ",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: "2ndSem_PUBLIC SERVICE ETHICS AND ACCOUNTABILITY.png",
+                trainingtype: "Out-of-House Training",
+                checkMatch: (y, m, d) => y === 2026 && m === 8 && d >= 16 && d <= 17
+            },
+            {
+                title: "TOTAL QUALITY MANAGEMENT",
+                competencies: "Quality Management",
+                target: "All Employees. Maximum of 5 participants",
+                dateRange: "September 17-18, 2026",
+                duration: "2 days",
+                deadline: "September 10, 2026",
+                mode: "Online",
+                objectives: "This two-day seminar-workshop provides participants with a comprehensive overview of the foundational and developmental concepts of Total Quality Management (TQM) and the best practices for its effective and efficient implementation. Through interactive discussions and practical applications, participants will gain an understanding of the core principles of TQM and its developmental process, explore the fundamentals of documentation, quality control tools, and quality planning as key frameworks for implementation, and examine the relationship between Quality Management Systems (QMS) and Deming’s 14 Points within the context of TQM. The program also introduces participants to continuous improvement approaches such as Kaizen, Quality Circles, and Project Implementation Workshops, including the development of action plans, programs, and monitoring mechanisms to support organizational excellence and sustained quality improvement.",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: "2ndSem_TOTAL QUALITY MANAGEMENT.png",
+                trainingtype: "Out-of-House Training",
+                checkMatch: (y, m, d) => y === 2026 && m === 8 && d >= 17 && d <= 18
+            },
+            {
+                title: "FAST LEAD: INTEGRITY",
+                competencies: "Integrity",
+                target: "All employees. Atleast 50 participants.",
+                dateRange: "September 21, 2026",
+                duration: "1 day",
+                deadline: "September 14, 2026",
+                mode: "Online",
+                objectives: "Integrity is often recognized as a core value, but its true measure lies in maintaining it amid pressure, tight deadlines, and competing priorities. More than simply adhering to ethical standards, integrity serves as the foundation of trust, credibility, and lasting impact in both personal and professional settings. Join us for this high-impact session under the Fast Lead Series as we examine how ethical consistency drives individual and organizational success and explore practical ways to cultivate unwavering integrity in everyday work. Participants will gain a deeper understanding of how personal values influence daily decisions and actions, learn strategies for navigating ethical dilemmas and standing firm under pressure, and discover how accountability and principled leadership foster trust, credibility, and psychological safety within teams.",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: "2ndSem_Integrity.png",
+                trainingtype: "Out-of-House Training",
+                checkMatch: (y, m, d) => y === 2026 && m === 8 && d === 21
+            },
+            {
+                title: "CERTIFICATE IN DATA STORYTELLING FOR PROFESSIONALS",
+                competencies: "Data Analysis and Visualization",
+                target: "All Offices/Services/Division. At least 20 participants",
+                dateRange: "September 21, 2026 & October 03, 2026",
+                duration: "2 days",
+                deadline: "September 7, 2026",
+                mode: "Face-to-face",
+                objectives: "Data storytelling transforms complex data into clear, impactful narratives that drive decision-making. This course empowers professionals, managers, and business leaders to master the art of delivering persuasive, data-driven presentations that captivate and inspire key stakeholders.",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: "2ndSem_DATA STORYTELLING.png",
+                trainingtype: "Out-of-House Training",
+                checkMatch: (y, m, d) => y === 2026 && ((m === 8 && d === 21) || (m === 9 && d === 3))
+            },
+            {
+                title: "COMPETENCY VALIDATION FOCUSED GROUP DISCUSSION",
+                competencies: "Competency Enhancement and Development",
+                target: "All Office/Service/ Division Heads (200 participants)",
+                dateRange: "September 23-25, 2026",
+                duration: "3 days",
+                deadline: "N/A",
+                mode: "Face-to-Face",
+                objectives: "An organization’s competency framework is only as effective as its ground-level alignment with operational reality. A Competency Validation Focus Group Discussion (FGD) is a structured, collaborative session designed to review, verify, and refine job-specific competencies, proficiency levels, and behavioral indicators directly with Subject Matter Experts (SMEs), department heads, and key stakeholders. This targeted program transitions generic or outdated competency frameworks into precise, actionable standards. Through facilitated qualitative review and expert consensus-building, participants will evaluate whether proposed core, functional, and leadership competencies accurately reflect current job demands, emerging operational requirements, and strategic institutional goals.",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: "2ndSemCOMPETENCY VALIDATION FOCUSED GROUP DISCUSSION.png",
+                trainingtype: "Out-of-House Training",
+                checkMatch: (y, m, d) => y === 2026 && m === 8 && d >= 23 && d <= 25
+            },
+            {
+                title: "4Cs OF CHANGE MANAGEMENT",
+                competencies: "Building Collaborative, Inclusive Working Relationships",
+                target: "All Emerging Leaders (SG 15 and up) who lacks 40 hours supervisory/ managerial requirements. Atleast 20 participants",
+                dateRange: "September 30, 2026 & October 01, 2026",
+                duration: "2 days",
+                deadline: "September 21, 2026",
+                mode: "Online",
+                objectives: "Organizational change often fails not because of flawed strategies, but because of human resistance and misaligned execution. The 4Cs of Change Management framework provides a pragmatic, human-centered approach to guiding teams through transition. This interactive training equips leaders, managers, and change agents with the critical competencies required to move individuals and teams from uncertainty to full adoption. Participants will learn how to articulate a clear vision (Clarity), build organizational buy-in (Commitment), empower teams with the right skills (Capability), and foster transparent, continuous dialogue (Communication).",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: "2ndSem_4cs.png",
+                trainingtype: "Out-of-House Training",
+                checkMatch: (y, m, d) => y === 2026 && ((m === 8 && d === 30) || (m === 9 && d === 1))
+            },
+            {
+                title: "INFORMATION AND COMMUNICATIONS TECHNOLOGY (ICT) TRAINING ON DIGITAL LITERACY AND SYSTEMS UTILISATION",
+                competencies: "Digital Literacy and Systems Utilization",
+                target: "All Offices/Services/Divisions. At least 60 – 70 participants",
+                dateRange: "October 06-07, 2026",
+                duration: "2 days",
+                deadline: "September 25, 2026",
+                mode: "Online",
+                objectives: "This comprehensive training program equips participants with essential digital competencies and practical skills to navigate modern technological landscapes efficiently. Designed to bridge technical knowledge gaps, the course focuses on practical computer literacy, core software applications, digital safety, and effective usage of workplace systems. Participants will learn how to leverage digital tools to streamline daily tasks, improve workplace productivity, and adapt to evolving software platforms safely and effectively.",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: "2ndSem_DIGITAL LITERACY AND SYSTEMS UTILISATION.png",
+                trainingtype: "In-House Training",
+                checkMatch: (y, m, d) => y === 2026 && m === 9 && d >= 6 && d <= 7
+            },
+            {
+                title: "TRAINING 15",
+                competencies: "Knowledge Management",
+                target: "Knowledge Management Unit. Maximum of 5 participants",
+                dateRange: "August 04-06, 2026",
+                duration: "3 days",
+                deadline: "August 03, 2026",
+                mode: "Face-to-Face",
+                objectives: "Description",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: "2ndSem_KM.png",
+                trainingtype: "Out-of-House Training",
+                checkMatch: (y, m, d) => y === 2026 && m === 7 && d >= 4 && d <= 6
+            },
+            {
+                title: "TRAINING 15",
+                competencies: "Knowledge Management",
+                target: "Knowledge Management Unit. Maximum of 5 participants",
+                dateRange: "August 04-06, 2026",
+                duration: "3 days",
+                deadline: "August 03, 2026",
+                mode: "Face-to-Face",
+                objectives: "Description",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: "2ndSem_KM.png",
+                trainingtype: "Out-of-House Training",
+                checkMatch: (y, m, d) => y === 2026 && m === 7 && d >= 4 && d <= 6
+            },
+            {
+                title: "TRAINING 15",
+                competencies: "Knowledge Management",
+                target: "Knowledge Management Unit. Maximum of 5 participants",
+                dateRange: "August 04-06, 2026",
+                duration: "3 days",
+                deadline: "August 03, 2026",
+                mode: "Face-to-Face",
+                objectives: "Description",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: "2ndSem_KM.png",
+                trainingtype: "Out-of-House Training",
+                checkMatch: (y, m, d) => y === 2026 && m === 7 && d >= 4 && d <= 6
+            },
+            {
+                title: "TRAINING sdskjdsjkdjsjd",
+                competencies: "Knowledge Management",
+                target: "Knowledge Management Unit. Maximum of 5 participants",
+                dateRange: "December 04-06, 2026",
+                duration: "3 days",
+                deadline: "December 03, 2026",
+                mode: "Face-to-Face",
+                objectives: "Description",
+                registrationLink: null,
+                image: "2ndSem_KM.png",
+                trainingtype: "Out-of-House Training",
+                checkMatch: (y, m, d) => y === 2026 && m === 12 && d >= 4 && d <= 6
+            },
+            {
+                title: "TRAINING 15",
+                competencies: "Knowledge Management",
+                target: "Knowledge Management Unit. Maximum of 5 participants",
+                dateRange: "August 04-06, 2026",
+                duration: "3 days",
+                deadline: "August 03, 2026",
+                mode: "Face-to-Face",
+                objectives: "Description",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: "2ndSem_KM.png",
+                trainingtype: "Out-of-House Training",
+                checkMatch: (y, m, d) => y === 2026 && m === 7 && d >= 4 && d <= 6
+            },
+            {
+                title: "PROJECT MANAGEMENT TRAINING",
+                competencies: "Project Management",
+                target: "All Offices/Services/Division. At least 50-70 participants",
+                dateRange: "May 25-28, 2026",
+                duration: "4 days",
+                deadline: "May 15 2026",
+                mode: "Online/Face-to-face",
+                objectives: "The Project Management Training is with the asse από andr program covers the fact manageme. The trainingsute for professionals acro Understand core proper manage posant and fun in prrect managem amemode and metho Manitor and contre performance by ang kapertama and reporting t ack progress and project su sstaly by contacting proyectators tocuments and hand",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: null,
+                checkMatch: (y, m, d) => y === 2026 && m === 4 && d >= 25 && d <= 28
+            },
+            {
+                title: "PUBLIC SPEAKING AND VISUAL COMMUNICATION TRAINING",
+                competencies: "Presentation Skills",
+                target: "All Offices/Services/Division. At least 60-70 participants",
+                dateRange: "October 03-04 2026",
+                duration: "2 days",
+                deadline: "May 26, 2026",
+                mode: "Face-to-Face",
+                objectives: "This 2-day training program equips participares with essential skills for effective public speaking and communication. It addresses common speaking tears, guides attendees attendees in organizing impactfil vimal.com thoughts clearly, and facilitates the delivery of engaging presentations that connect with audiences. Participants will leam practical techniques to enhance their voice, body language, and ovmall confidence. The program also covers creating compeiling visual aide that make messages stand out. Understand the basics of effective public spessung and overcome common fears Organize and deliver cinar, engaging presentations that connect with the authence Use simple techniques to improve voice, body language and confidence weste speaking Create soul aids that support and enhance their message, making presentations more impactful Practice presenting with feedback to improve their skills in a supportive environment. Apply these skills to everyday work situations, meetings, and harmal presentations",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: null,
+                checkMatch: (y, m, d) => y === 2026 && m === 10 && (d === 3 || d === 4)
+            },
+            {
+                title: "DIGITAL TRANSFORMATION LEADERSHIP",
+                competencies: "Leadning Change. Advance and Superior",
+                target: "All Emerging and Current Leaders (SG15 and up) who lacks 40 hours supervisory/managerial requirements. Maximum of 60-70 participants",
+                dateRange: "June 09-10 2026",
+                duration: "2 days",
+                deadline: "June 03. 2026",
+                mode: "Online via MS teams",
+                objectives: "In fast-changing digital landscape, organizations need leaders who can dive innovation adapt to disruption, and inspire teams through transformation. This Training today's equiția leaders and emerging leaders with the vision skills and strategies to lead successful digital initiatives. 1. Craft a compelling digital transformation vision 2. Lead with confidence in times of disnption 3. Translate digital strategies into measurable organizational outcomes mes of disruption 4. Inspire teams to embrace innovation and continuous improvement",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: null,
+                checkMatch: (y, m, d) => y === 2026 && m === 5 && (d === 9 || d === 10)
+            },
+            {
+                title: "CONTINUING PROFESSIONAL DEVELOPMENT (CPD) FOR PUBLIC SERVANTS: Advancing Accountability, Competence, and Service Excellence",
+                competencies: "All Technical/Functional Competericies related",
+                target: "All DOT Professionals RA 1080 (Board License) Cen Personnel. Al least 50 participants",
+                dateRange: "April to June 2026",
+                duration: "Depending on the selected program",
+                deadline: "24 April 2020",
+                mode: "Online Onsite",
+                objectives: "This Continuing Professional Development (CPD) program aims to enhance the competencies. ethical accountability, and service ortentation of public servants. The course is designed to strengthen their commitment to public trust, equip them with relevant knowledge and skills, and promole a culture of integrity and excellence in government service",
+                registrationLink: "https://bit.ly/CY2026CPD-registration",
+                image: "cpdpublic.jpg",
+                checkMatch: (y, m, d) => y === 2026 && (m >= 3 && m <= 5)
+            },
+            {
+                title: "ORGANIZATION WIDE COMPETENCY FRAMEWORK REVIEW AND ASSESSMENT",
+                competencies: "Organizational Development",
+                target: "All Offices/Services/Division. At least 60-70 participants per Session",
+                dateRange: "April to June 2020",
+                duration: "N/A",
+                deadline: "N/A",
+                mode: "Face-to-Face",
+                objectives: "The Organization-Wide Competency Framework Review and Assessment aims to provide participants with a comprehensive understanding of the organization's competency framework. and its role in supporting strafegic objectives. The activity will focus on reviewing existing competencies, assessing current practices, and identifying areas for improvement to ensure alignment across departments and roles it also seeks to promote consistency in competency evaluation, encourage stakeholder engagement, and support workforce development through structured assessment. The review and assessment will generate actionable recommendations to strengthen the framework and enhance organizational effectiveness. Activities include validation, mapping, profiling, through focus group discussions.",
+                registrationLink: null,
+                image: null,
+                checkMatch: (y, m, d) => y === 2026 && (m >= 3 && m <= 5)
+            },
+            {
+                title: "MANDATORY CONTINUING LEGAL EDUCATION (MCLE) FOR PUBLIC SECTOR LAWYERS: Strengthening Legal Capacity and Ethical Accountability",
+                competencies: "All Legal-Related Technical Functional Competencies",
+                target: "All DOTY Lawyers Organic Personnel (Please refer to the CBLDE Functional Competency for CY 2025)",
+                dateRange: "May to June 2028 (Tentative)",
+                duration: "Depending on the approved program",
+                deadline: "15 May 2028",
+                mode: "Online/Face-to-Face",
+                objectives: "This program aims to enhance the competencies of public sector lawyers in the performance of their legal functions, ensuring adherence to effhsical standards, transparency, and accountabilly in government service. It is designed to meet the MCLE requirements while addressing the unique challenges and responsibilities of lawyers in the public sector",
+                registrationLink: "https://bit.ly/LNDRegistration2026",
+                image: "mcle.jpg",
+                checkMatch: (y, m, d) => y === 2026 && (m === 4 || m === 10)
+            }
+        ];
+
         renderDynamicCalendar();
+
+        const eventListContainer = document.getElementById('event-list-container');
+
+        function getTrainingTypeBadge(event) {
+            const trainingType = (event.trainingtype || '').trim();
+            if (!trainingType) return '';
+
+            const className = trainingType
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-|-$/g, '');
+
+            return `<span class="training-type-badge ${className || 'general-training'}">${trainingType}</span>`;
+        }
+
+        function getRegistrationButtonHtml(event) {
+            const endDate = getEventEndDate(event);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (endDate && endDate < today) {
+                return '<button class="event-register-btn" disabled>Registration is closed</button>';
+            }
+
+            const hasLink = event.registrationLink && event.registrationLink.trim();
+            return hasLink
+                ? `<a href="${event.registrationLink}" target="_blank" class="event-register-btn">Register</a>`
+                : '<button class="event-register-btn" disabled>Register</button>';
+        }
+
+        function getTrainingGroupClass(event) {
+            const startDate = getEventStartDate(event);
+            const endDate = getEventEndDate(event);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (startDate && endDate && startDate <= today && today <= endDate) {
+                return 'ongoing-training';
+            }
+
+            if (endDate && endDate < today) {
+                return 'conducted-training';
+            }
+
+            if (startDate && startDate > today) {
+                return 'upcoming-training';
+            }
+
+            return '';
+        }
+
+        function renderEventList() {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const ongoingEvents = trainingDatabase
+                .map((event, index) => ({ event, index }))
+                .filter(({ event }) => {
+                    const startDate = getEventStartDate(event);
+                    const endDate = getEventEndDate(event);
+                    return startDate && endDate && startDate <= today && today <= endDate;
+                });
+            const conductedEvents = trainingDatabase
+                .map((event, index) => ({ event, index }))
+                .filter(({ event }) => {
+                    const endDate = getEventEndDate(event);
+                    return endDate && endDate < today;
+                });
+            const upcomingEvents = trainingDatabase
+                .map((event, index) => ({ event, index }))
+                .filter(({ event }) => {
+                    const startDate = getEventStartDate(event);
+                    return startDate && startDate > today;
+                });
+            const ongoingIndexes = new Set(ongoingEvents.map(({ index }) => index));
+            const conductedIndexes = new Set(conductedEvents.map(({ index }) => index));
+            const upcomingIndexes = new Set(upcomingEvents.map(({ index }) => index));
+            let previousMonth = '';
+            const ongoingHtml = ongoingEvents.length > 0
+                ? `<div class="event-month-separator ongoing-separator">Ongoing</div>${ongoingEvents.map(({ event, index }) => renderEventListItem(event, index)).join('')}`
+                : '';
+            const upcomingHtml = upcomingEvents.length > 0
+                ? `<div class="event-month-separator upcoming-separator">Upcoming Trainings</div>${upcomingEvents.map(({ event, index }) => renderEventListItem(event, index)).join('')}`
+                : '';
+            const conductedHtml = conductedEvents.length > 0
+                ? `<div class="event-month-separator conducted-separator">Successfully Conducted</div>${conductedEvents.map(({ event, index }) => renderEventListItem(event, index)).join('')}`
+                : '';
+            const eventHtml = trainingDatabase.map((event, index) => {
+                if (ongoingIndexes.has(index) || upcomingIndexes.has(index) || conductedIndexes.has(index)) return '';
+                const buttonHtml = getRegistrationButtonHtml(event);
+                const startDate = getEventStartDate(event);
+                const monthKey = startDate && !Number.isNaN(startDate.getTime())
+                    ? `${startDate.getFullYear()}-${startDate.getMonth()}`
+                    : 'unknown';
+                const monthSeparator = monthKey !== previousMonth
+                    ? `<div class="event-month-separator">${startDate && !Number.isNaN(startDate.getTime())
+                        ? startDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+                        : 'Other Events'}</div>`
+                    : '';
+                previousMonth = monthKey;
+                
+                return `
+                ${monthSeparator}
+                <div class="event-list-item ${getTrainingGroupClass(event)}" data-event-index="${index}" tabindex="0" role="button" aria-label="View details for ${event.title}">
+                    <div class="event-list-date">${event.dateRange}</div>
+                    ${getTrainingTypeBadge(event)}
+                    <h4>${event.title}</h4>
+                    <p><strong>Target:</strong> ${event.target}</p>
+                    <p><strong>Mode:</strong> ${event.mode}</p>
+                    <p><strong>Deadline:</strong> ${event.deadline}</p>
+                    ${buttonHtml}
+                </div>
+            `;
+            }).join('');
+            eventListContainer.innerHTML = ongoingHtml + upcomingHtml + conductedHtml + eventHtml;
+        }
+
+        function renderEventListItem(event, index) {
+            const buttonHtml = getRegistrationButtonHtml(event);
+            return `
+                <div class="event-list-item ${getTrainingGroupClass(event)}" data-event-index="${index}" tabindex="0" role="button" aria-label="View details for ${event.title}">
+                    <div class="event-list-date">${event.dateRange}</div>
+                    ${getTrainingTypeBadge(event)}
+                    <h4>${event.title}</h4>
+                    <p><strong>Target:</strong> ${event.target}</p>
+                    <p><strong>Mode:</strong> ${event.mode}</p>
+                    <p><strong>Deadline:</strong> ${event.deadline}</p>
+                    ${buttonHtml}
+                </div>
+            `;
+        }
+
+        function getEventStartDate(event) {
+            const monthNames = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+
+            const value = event.dateRange || '';
+            const monthMatch = value.match(/([A-Za-z]+)\s*(?:to\s*[A-Za-z]+)?\s*(\d{4})/);
+            const dayMatch = value.match(/([A-Za-z]+)\s+(\d{1,2})(?:\s*[-–]\s*(\d{1,2}))?,?\s*(\d{4})/);
+
+            if (dayMatch) {
+                const monthIndex = monthNames.indexOf(dayMatch[1]);
+                const year = Number(dayMatch[4]);
+                const day = Number(dayMatch[2]);
+                if (monthIndex >= 0 && year) {
+                    return new Date(year, monthIndex, day);
+                }
+            }
+
+            if (monthMatch) {
+                const monthIndex = monthNames.indexOf(monthMatch[1]);
+                const year = Number(monthMatch[2]);
+                if (monthIndex >= 0 && year) {
+                    return new Date(year, monthIndex, 1);
+                }
+            }
+
+            return null;
+        }
+
+        function getEventEndDate(event) {
+            const monthNames = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            const value = event.dateRange || '';
+            const dayMatch = value.match(/([A-Za-z]+)\s+(\d{1,2})(?:\s*[-–]\s*(\d{1,2}))?,?\s*(\d{4})/);
+            const monthMatch = value.match(/([A-Za-z]+)(?:\s+to\s+([A-Za-z]+))?\s+(\d{4})/);
+
+            if (dayMatch) {
+                const monthIndex = monthNames.indexOf(dayMatch[1]);
+                const year = Number(dayMatch[4]);
+                const day = Number(dayMatch[3] || dayMatch[2]);
+                if (monthIndex >= 0 && year) {
+                    return new Date(year, monthIndex, day);
+                }
+            }
+
+            if (monthMatch) {
+                const monthIndex = monthNames.indexOf(monthMatch[2] || monthMatch[1]);
+                const year = Number(monthMatch[3]);
+                if (monthIndex >= 0 && year) {
+                    return new Date(year, monthIndex + 1, 0);
+                }
+            }
+
+            return null;
+        }
+
+        function renderUpcomingEvents() {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const upcoming = trainingDatabase
+                .map((event, index) => ({ event, index, startDate: getEventStartDate(event) }))
+                .filter(({ startDate }) => startDate && startDate >= today)
+                .sort((a, b) => a.startDate - b.startDate)
+                .slice(0, 2);
+
+            const upcomingList = document.getElementById('upcoming-events-list');
+            const upcomingSection = document.querySelector('.upcoming-events');
+
+            if (!upcoming.length) {
+                upcomingList.innerHTML = '';
+                upcomingSection.style.display = 'none';
+                return;
+            }
+
+            upcomingSection.style.display = 'block';
+            upcomingList.innerHTML = upcoming.map(({ event, index }) => `
+                <div class="upcoming-event-item" data-event-index="${index}" tabindex="0" role="button" aria-label="View details for ${event.title}">
+                    <strong>${event.title}</strong>
+                    ${getTrainingTypeBadge(event)}
+                    <span>${event.dateRange}</span>
+                    <span>${event.mode}</span>
+                </div>
+            `).join('');
+        }
+
+        document.querySelectorAll('.calendar-tab').forEach((button) => {
+            button.addEventListener('click', () => {
+                const tabName = button.dataset.tab;
+                document.querySelectorAll('.calendar-tab').forEach((tab) => tab.classList.toggle('active', tab === button));
+                document.querySelectorAll('.calendar-tab-panel').forEach((panel) => panel.classList.toggle('active', panel.id === tabName));
+                document.querySelector('.upcoming-events').classList.toggle('tab-hidden', tabName === 'event-list-view');
+            });
+        });
+
+        renderEventList();
+        renderUpcomingEvents();
+        bindEventClickHandlers();
 
         // --- Training Modal Logic ---
         const trainingModal = document.getElementById('trainingModal');
         const closeTrainingBtn = document.getElementById('closeTrainingBtn');
         const trainingListContainer = document.getElementById('training-list-container');
         const modalDateSubtitle = document.getElementById('modal-date-subtitle');
+        const modalHeaderTitle = document.querySelector('.modal-header-title');
+
+        function openEventDetails(event) {
+            modalHeaderTitle.innerText = event.title;
+            modalDateSubtitle.innerText = `Schedule: ${event.dateRange}`;
+            const imageHtml = event.image ? `<img src="${event.image}" alt="${event.title}" class="modal-image">` : '';
+            const buttonHtml = getRegistrationButtonHtml(event);
+            trainingListContainer.innerHTML = `
+                <div class="training-item">
+                    ${imageHtml}
+                    ${getTrainingTypeBadge(event)}
+                    <p><strong>Target Participants:</strong> ${event.target}</p>
+                    ${event.duration && event.duration !== 'N/A' ? `<p><strong>Duration:</strong> ${event.duration}</p>` : ''}
+                    ${event.competencies ? `<p><strong>Competencies:</strong> ${event.competencies}</p>` : ''}
+                    ${event.deadline && event.deadline !== 'N/A' ? `<p><strong>Deadline of Nomination:</strong> ${event.deadline}</p>` : ''}
+                    ${event.mode ? `<p><strong>Mode of Delivery:</strong> ${event.mode}</p>` : ''}
+                    ${event.objectives ? `<p><strong>Course Outline/Objectives:</strong> ${event.objectives}</p>` : ''}
+                    ${buttonHtml}
+                </div>
+            `;
+            trainingModal.classList.add('show');
+        }
+
+        function bindEventClickHandlers() {
+            document.querySelectorAll('.event-list-item, .upcoming-event-item').forEach((item) => {
+                item.addEventListener('click', () => {
+                    const index = Number(item.dataset.eventIndex);
+                    openEventDetails(trainingDatabase[index]);
+                });
+
+                item.addEventListener('keydown', (event) => {
+                    if (event.key !== 'Enter' && event.key !== ' ') return;
+                    event.preventDefault();
+                    const index = Number(item.dataset.eventIndex);
+                    openEventDetails(trainingDatabase[index]);
+                });
+            });
+        }
+
+        eventListContainer.addEventListener('click', (event) => {
+            const item = event.target.closest('.event-list-item');
+            if (!item) return;
+            const index = Number(item.dataset.eventIndex);
+            openEventDetails(trainingDatabase[index]);
+        });
+
+        eventListContainer.addEventListener('keydown', (event) => {
+            if (event.key !== 'Enter' && event.key !== ' ') return;
+            const item = event.target.closest('.event-list-item');
+            if (!item) return;
+            event.preventDefault();
+            const index = Number(item.dataset.eventIndex);
+            openEventDetails(trainingDatabase[index]);
+        });
+
+        document.getElementById('upcoming-events-list').addEventListener('click', (event) => {
+            const item = event.target.closest('.upcoming-event-item');
+            if (!item) return;
+            const index = Number(item.dataset.eventIndex);
+            openEventDetails(trainingDatabase[index]);
+        });
+
+        document.getElementById('upcoming-events-list').addEventListener('keydown', (event) => {
+            if (event.key !== 'Enter' && event.key !== ' ') return;
+            const item = event.target.closest('.upcoming-event-item');
+            if (!item) return;
+            event.preventDefault();
+            const index = Number(item.dataset.eventIndex);
+            openEventDetails(trainingDatabase[index]);
+        });
 
         function openTrainingModal(year, month, day) {
             const matchedEvents = trainingDatabase.filter(event => event.checkMatch(year, month, day));
+            modalHeaderTitle.innerText = 'Training Schedule';
             modalDateSubtitle.innerText = `Scheduled for: ${monthNames[month]} ${day}, ${year}`;
             trainingListContainer.innerHTML = '';
 
@@ -1121,8 +2178,10 @@
                 trainingListContainer.innerHTML = '<div class="no-event-msg">No scheduled training programs for this date.</div>';
             } else {
                 matchedEvents.forEach(event => {
+                    const buttonHtml = getRegistrationButtonHtml(event);
                     const itemHTML = `
                         <div class="training-item">
+                            ${getTrainingTypeBadge(event)}
                             <h4>${event.title}</h4>
                             <p><strong>Target Participants:</strong> ${event.target}</p>
                             <p><strong>Schedule:</strong> ${event.dateRange}</p>
@@ -1131,6 +2190,7 @@
                             ${event.deadline && event.deadline !== 'N/A' ? `<p><strong>Deadline of Nomination:</strong> ${event.deadline}</p>` : ''}
                             ${event.mode ? `<p><strong>Mode of Delivery:</strong> ${event.mode}</p>` : ''}
                             ${event.objectives ? `<p><strong>Course Outline/Objectives:</strong> ${event.objectives}</p>` : ''}
+                            ${buttonHtml}
                         </div>
                     `;
                     trainingListContainer.insertAdjacentHTML('beforeend', itemHTML);
@@ -1148,41 +2208,47 @@
         });
 
 
-        // --- 5-Card Carousel Logic ---
-        const cardElements = Array.from(document.querySelectorAll('.travel-card'));
-        const leftBtn = document.querySelector('.left-arrow');
-        const rightBtn = document.querySelector('.right-arrow');
-        let activeIndex = cardElements.findIndex(c => c.classList.contains('card-active'));
-        if (activeIndex === -1) activeIndex = 0;
+        // --- Background Video Logic ---
+        const dotVideos = [
+            'https://videos.pexels.com/video-files/7252274/7252274-uhd_2560_1440_25fps.mp4',
+            'https://videos.pexels.com/video-files/29337317/12645572_2560_1440_120fps.mp4',
+            'https://videos.pexels.com/video-files/3273637/3273637-hd_1920_1080_30fps.mp4',
+            'https://videos.pexels.com/video-files/4427698/4427698-hd_1080_1920_30fps.mp4',
+            'https://videos.pexels.com/video-files/36066940/15295954_1920_1080_24fps.mp4',
+        ];
 
-        function applyClasses(index) {
-            const n = cardElements.length; 
-            const leftIndex = (index - 1 + n) % n;
-            const farLeftIndex = (index - 2 + n) % n;
-            const rightIndex = (index + 1) % n;
-            const farRightIndex = (index + 2) % n;
+        let currentVideoIndex = 0;
+        const bgVideo = document.getElementById('bgVideo');
 
-            cardElements.forEach((card) => card.classList.remove('card-far-left', 'card-left', 'card-active', 'card-right', 'card-far-right'));
-
-            cardElements[farLeftIndex].classList.add('card-far-left');
-            cardElements[leftIndex].classList.add('card-left');
-            cardElements[index].classList.add('card-active');
-            cardElements[rightIndex].classList.add('card-right');
-            cardElements[farRightIndex].classList.add('card-far-right');
+        function loadVideo(index) {
+            const videoSource = bgVideo.querySelector('source');
+            const currentSrc = dotVideos[index];
+            videoSource.src = currentSrc;
+            bgVideo.load();
+            
+            if (currentSrc.includes('3273637') || currentSrc.includes('4427698')) {
+                bgVideo.playbackRate = 0.5; 
+            } else {
+                bgVideo.playbackRate = 1.0; 
+            }
+            
+            bgVideo.play().catch(err => console.log("Video play error:", err));
         }
 
-        function nextCard() { activeIndex = (activeIndex + 1) % cardElements.length; applyClasses(activeIndex); }
-        function prevCard() { activeIndex = (activeIndex - 1 + cardElements.length) % cardElements.length; applyClasses(activeIndex); }
+        function rotateVideo() {
+            bgVideo.classList.add('fade-out');
+            setTimeout(() => {
+                currentVideoIndex = (currentVideoIndex + 1) % dotVideos.length;
+                loadVideo(currentVideoIndex);
+                bgVideo.classList.remove('fade-out');
+            }, 500);
+        }
 
-        rightBtn.addEventListener('click', nextCard);
-        leftBtn.addEventListener('click', prevCard);
+        loadVideo(0);
+        setInterval(rotateVideo, 10000);
 
-        let carouselInterval = setInterval(nextCard, 4000);
-        const cardsContainer = document.querySelector('.cards-container');
-        cardsContainer.addEventListener('mouseenter', () => clearInterval(carouselInterval));
-        cardsContainer.addEventListener('mouseleave', () => { carouselInterval = setInterval(nextCard, 4000); });
 
-        applyClasses(activeIndex);
+
     </script>
 </body>
 </html>
