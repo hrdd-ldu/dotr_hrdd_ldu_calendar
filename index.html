@@ -1913,7 +1913,7 @@
                 ? `<div class="event-month-separator upcoming-separator">Upcoming Trainings</div>${upcomingEvents.map(({ event, index }) => renderEventListItem(event, index)).join('')}`
                 : '';
             const conductedHtml = conductedEvents.length > 0
-                ? `<div class="event-month-separator conducted-separator">Successfully Conducted</div>${conductedEvents.map(({ event, index }) => renderEventListItem(event, index)).join('')}`
+                ? `<div class="event-month-separator conducted-separator">Previous Training Schedules</div>${conductedEvents.map(({ event, index }) => renderEventListItem(event, index)).join('')}`
                 : '';
             const eventHtml = trainingDatabase.map((event, index) => {
                 if (ongoingIndexes.has(index) || upcomingIndexes.has(index) || conductedIndexes.has(index)) return '';
