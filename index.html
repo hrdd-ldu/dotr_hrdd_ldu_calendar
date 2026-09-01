@@ -2129,7 +2129,7 @@
         function openTrainingModal(year, month, day) {
             const matchedEvents = trainingDatabase.filter(event => event.checkMatch(year, month, day));
             modalHeaderTitle.innerText = 'Training Schedule';
-            modalDateSubtitle.innerText = `Scheduled for: ${monthNames[month]} ${day}, ${year}`;
+            modalDateSubtitle.innerText = `${monthNames[month]} ${day}, ${year}`;
             trainingListContainer.innerHTML = '';
 
             if (matchedEvents.length === 0) {
