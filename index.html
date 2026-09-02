@@ -1665,7 +1665,7 @@
                 title: "CERTIFICATE IN DATA STORYTELLING FOR PROFESSIONALS",
                 competencies: "Data Analysis and Visualization",
                 target: "All Offices/Services/Division. At least 20 participants.",
-                dateRange: "October 10, 17 2026",
+                dateRange: "October 10 and 17, 2026",
                 duration: "2 days",
                 deadline: "September 7, 2026",
                 mode: "Face-to-face",
@@ -1673,7 +1673,7 @@
                 registrationLink: "https://bit.ly/LNDRegistration2026",
                 image: "2ndSem_DATA STORYTELLING.png",
                 trainingtype: "Out-of-House Training",
-                checkMatch: (y, m, d) => y === 2026 && ((m === 8 && d === 10) || (m === 8 && d === 17))
+                checkMatch: (y, m, d) => y === 2026 && ((m === 9 && d === 10) || (m === 9 && d === 17))
             },
             {
                 title: "COMPETENCY VALIDATION FOCUSED GROUP DISCUSSION",
@@ -1956,7 +1956,7 @@
 
             const value = event.dateRange || '';
             const monthMatch = value.match(/([A-Za-z]+)\s*(?:to\s*[A-Za-z]+)?\s*(\d{4})/);
-            const dayMatch = value.match(/([A-Za-z]+)\s+(\d{1,2})(?:\s*[-–]\s*(\d{1,2}))?,?\s*(\d{4})/);
+            const dayMatch = value.match(/([A-Za-z]+)\s+(\d{1,2})(?:\s*(?:[-–]|and|,)\s*(\d{1,2}))?,?\s*(\d{4})/);
 
             if (dayMatch) {
                 const monthIndex = monthNames.indexOf(dayMatch[1]);
@@ -1984,7 +1984,7 @@
                 'July', 'August', 'September', 'October', 'November', 'December'
             ];
             const value = event.dateRange || '';
-            const dayMatch = value.match(/([A-Za-z]+)\s+(\d{1,2})(?:\s*[-–]\s*(\d{1,2}))?,?\s*(\d{4})/);
+            const dayMatch = value.match(/([A-Za-z]+)\s+(\d{1,2})(?:\s*(?:[-–]|and|,)\s*(\d{1,2}))?,?\s*(\d{4})/);
             const monthMatch = value.match(/([A-Za-z]+)(?:\s+to\s+([A-Za-z]+))?\s+(\d{4})/);
 
             if (dayMatch) {
