@@ -257,6 +257,37 @@
             gap: 50px;
             position: relative;
             z-index: 5;
+            transition: gap 0.45s ease;
+        }
+
+        .video-showcase-container.programs-active {
+            gap: 0;
+        }
+
+        .video-showcase-container.programs-active .calendar-panel {
+            flex: 1 1 100% !important;
+            max-width: 1050px;
+            min-width: 0;
+            margin: 0 auto;
+        }
+
+        .calendar-panel {
+            transition: flex 0.45s ease, max-width 0.45s ease, margin 0.45s ease;
+        }
+
+        .video-frame-wrapper {
+            max-width: 300px;
+            opacity: 1;
+            transform: scale(1);
+            overflow: hidden;
+            transition: max-width 0.45s ease, opacity 0.35s ease, transform 0.45s ease;
+        }
+
+        .video-showcase-container.programs-active .video-frame-wrapper {
+            max-width: 0;
+            opacity: 0;
+            transform: scale(0.94);
+            pointer-events: none;
         }
 
         .program-spotlight {
@@ -1340,7 +1371,7 @@
             <p style="font-size: 1.1rem; margin-bottom: 0; color: var(--text-gray); line-height: 1.6; max-width: 700px;">Watch our latest advisory to explore upcoming training opportunities designed to enhance your skills, knowledge, and commitment to public service.</p>
         </div>
         
-        <div class="video-showcase-container" style="flex-wrap: wrap; gap: 100px; align-items: stretch; justify-content: center;">
+        <div id="program-layout" class="video-showcase-container" style="flex-wrap: wrap; gap: 100px; align-items: stretch; justify-content: center;">
             <div class="calendar-panel" style="flex: 0 1 700px;">
                 <div class="calendar-tab-bar">
                     <button class="calendar-tab active" data-tab="calendar-view">Calendar</button>
@@ -1445,6 +1476,14 @@
 
         document.getElementById('copyright-year').innerText = new Date().getFullYear();
 
+        function centerCalendarInView() {
+            document.querySelector('.calendar-panel').scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+                inline: 'center'
+            });
+        }
+
         function renderDynamicCalendar() {
             const today = currentDateObj.getDate();
             const thisMonth = currentDateObj.getMonth();
@@ -1497,12 +1536,14 @@
             navMonth--;
             if (navMonth < 0) { navMonth = 11; navYear--; }
             renderDynamicCalendar();
+            centerCalendarInView();
         });
 
         document.getElementById('next-month-btn').addEventListener('click', () => {
             navMonth++;
             if (navMonth > 11) { navMonth = 0; navYear++; }
             renderDynamicCalendar();
+            centerCalendarInView();
         });
 
         // --- Training Database ---
@@ -1834,6 +1875,17 @@
 
         const eventListContainer = document.getElementById('event-list-container');
 
+        eventListContainer.addEventListener('wheel', (event) => {
+            const atTop = eventListContainer.scrollTop <= 0;
+            const atBottom = eventListContainer.scrollTop + eventListContainer.clientHeight >= eventListContainer.scrollHeight - 1;
+            const movingPastList = (event.deltaY < 0 && atTop) || (event.deltaY > 0 && atBottom);
+
+            if (!movingPastList) return;
+
+            event.preventDefault();
+            window.scrollBy({ top: event.deltaY, behavior: 'auto' });
+        }, { passive: false });
+
         function getTrainingTypeBadge(event) {
             const trainingType = (event.trainingtype || '').trim();
             if (!trainingType) return '';
@@ -2073,9 +2125,17 @@
         document.querySelectorAll('.calendar-tab').forEach((button) => {
             button.addEventListener('click', () => {
                 const tabName = button.dataset.tab;
+                const programLayout = document.getElementById('program-layout');
                 document.querySelectorAll('.calendar-tab').forEach((tab) => tab.classList.toggle('active', tab === button));
                 document.querySelectorAll('.calendar-tab-panel').forEach((panel) => panel.classList.toggle('active', panel.id === tabName));
                 document.querySelector('.upcoming-events').classList.toggle('tab-hidden', tabName === 'event-list-view');
+                programLayout.classList.toggle('programs-active', tabName === 'event-list-view');
+                if (tabName === 'calendar-view') {
+                    showcaseVideo.play().catch(() => {});
+                    centerCalendarInView();
+                } else {
+                    showcaseVideo.pause();
+                }
             });
         });
 
