@@ -2132,7 +2132,10 @@
                 programLayout.classList.toggle('programs-active', tabName === 'event-list-view');
                 if (tabName === 'calendar-view') {
                     showcaseVideo.play().catch(() => {});
-                    centerCalendarInView();
+                    document.querySelector('.video-showcase-section').scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
                 } else {
                     showcaseVideo.pause();
                 }
