@@ -1405,7 +1405,7 @@
                 </div>
 
                 <div id="event-list-view" class="calendar-tab-panel">
-                    <div class="event-list-container" id="event-list-container"></div>
+                    <div class="event-list-container" id="event-list-container" tabindex="-1"></div>
                 </div>
 
                 <div class="upcoming-events">
@@ -2121,6 +2121,8 @@
                     });
                 } else {
                     showcaseVideo.pause();
+                    eventListContainer.focus({ preventScroll: true });
+                    eventListContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             });
         });
